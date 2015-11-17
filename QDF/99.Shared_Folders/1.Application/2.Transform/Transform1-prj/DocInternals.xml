@@ -1,42 +1,9 @@
 ﻿<DocInternals>
-  <AlwaysLoose>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-  </AlwaysLoose>
-  <FieldSrcTables>
-    <String>6</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>7</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>8</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>9</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>10</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>11</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>12</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>13</String>
-    <String>1</String>
-    <String>Transactions</String>
-    <String>14</String>
-    <String>1</String>
-    <String>Transactions</String>
-  </FieldSrcTables>
+  <AlwaysLoose></AlwaysLoose>
+  <FieldSrcTables></FieldSrcTables>
   <TableViewData></TableViewData>
   <Bookmarks></Bookmarks>
-  <SavedByVersion>11.20.12235.0409</SavedByVersion>
+  <SavedByVersion>11.20.12742.0409</SavedByVersion>
   <ForceBackEndMacroExecution>false</ForceBackEndMacroExecution>
   <FieldTags>
     <ScriptBased>

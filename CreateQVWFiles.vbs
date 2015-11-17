@@ -21,11 +21,7 @@ With fso.GetFolder(sPath)
                 If InStr(1, folder.Path, "-prj") <> 0 Then
                     ' Copy and rename template to create empty qvd file next to prj folder
                     If fso.FileExists(TemplatePath) Then
-<<<<<<< HEAD
-                        fso.CopyFile TemplatePath, Replace(folder.Path ,"-prj",".qvw"), True'OverWriteExisting
-=======
                         fso.CopyFile TemplatePath, Replace(folder.Path ,"-prj",".qvw"), True
->>>>>>> refs/remotes/origin/master
                     End If
                 End If 
             ' Recurse to check for further subfolders

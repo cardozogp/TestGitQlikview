@@ -1,24 +1,9 @@
 ﻿<DocInternals>
-  <AlwaysLoose>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-  </AlwaysLoose>
-  <FieldSrcTables>
-    <String>6</String>
-    <String>1</String>
-    <String>ASCIITrans</String>
-    <String>7</String>
-    <String>1</String>
-    <String>ASCIITrans</String>
-    <String>8</String>
-    <String>1</String>
-    <String>ASCIITrans</String>
-  </FieldSrcTables>
+  <AlwaysLoose></AlwaysLoose>
+  <FieldSrcTables></FieldSrcTables>
   <TableViewData></TableViewData>
   <Bookmarks></Bookmarks>
-  <SavedByVersion>11.20.12235.0409</SavedByVersion>
+  <SavedByVersion>11.20.12742.0409</SavedByVersion>
   <ForceBackEndMacroExecution>false</ForceBackEndMacroExecution>
   <FieldTags>
     <ScriptBased>

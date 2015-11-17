@@ -5,8 +5,8 @@ Set fso = CreateObject("Scripting.FileSystemObject")
 Set Qv = CreateObject("QlikTech.QlikView")
 
 RecurseFolders ".","1.Extract"
-RecurseFolders ".,2.Transform"
-RecurseFolders ".,3.Load"
+RecurseFolders ".","2.Transform"
+RecurseFolders ".","3.Load"
  
  Set fso = Nothing
 Qv.Quit
@@ -19,8 +19,10 @@ With fso.GetFolder(sPath)
         For Each Folder In .SubFolders
             if Left(Folder.Name, 1) <> "." Then
                 if Folder.name=Target Then
-					for each File in Folder.Files 
-						OpenClose(File)
+					for each File in Folder.Files
+						If fso.getExtensionName(File.Name)= "qvw" Then
+							OpenClose(File)
+						end if
 					Next
 				end if
             RecurseFolders folder.Path, Target

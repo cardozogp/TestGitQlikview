@@ -2384,4 +2384,8 @@
       <OnLockActionItems></OnLockActionItems>
     </FieldProperties>
   </FieldProperties>
+  <BinaryAlternateStateStates enctype="base64"></BinaryAlternateStateStates>
+  <TextualAlternateStateStates enctype="base64">
+      AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </TextualAlternateStateStates>
 </AllProperties>
