@@ -5,8 +5,8 @@ Set fso = CreateObject("Scripting.FileSystemObject")
 Set Qv = CreateObject("QlikTech.QlikView")
 
 RecurseFolders ".","1.Extract"
-'RecurseFolders ".,2.Transform"
-'RecurseFolders ".,3.Load"
+RecurseFolders ".,2.Transform"
+RecurseFolders ".,3.Load"
  
  Set fso = Nothing
 Qv.Quit
