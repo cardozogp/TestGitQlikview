@@ -1,0 +1,633 @@
+﻿///$tab Deployment Framework
+// Reset BasePath
+let vG.BasePath=; 
+
+
+// Basic search for 1.Init.qvs
+$(Include=..\..\..\..\3.include\1.basevariable\1.init.qvs);
+$(Include=..\..\..\3.include\1.basevariable\1.init.qvs);
+$(Include=..\..\3.include\1.basevariable\1.init.qvs);
+$(Include=..\3.include\1.basevariable\1.init.qvs);
+
+LET vL.DuplicatedPrefixDetected='$(vL.LoadContainerMapCount)' ;// Warn if duplicated prefix names are found
+
+
+// Exit script if vG.BasePath not found
+exit script when '$(vG.BasePath)'= '' ;
+
+$(Include=$(vG.LocalePath)\1.US.qvs);
+
+
+// Sub functions loaded in for later use
+
+// Load container maping table and variables
+// By using vL.ContainerMapMode (LoadVariableCSV,ContainerMap.csv','','true'); 
+// the csv will be treated as an ContainerMap.csv file and all containers base variables in ContainerMap.csv will be loaded
+call LoadVariableCSV('$(vG.BaseVariablePath)\ContainerMap.csv','','','','true');
+
+// Call LoadContainerMap function to get current container prefix Name
+call LoadContainerMap('$(vG.BaseVariablePath)\ContainerMap.csv','','$(vG.BasePath)');
+
+LET vL.ContainerPrefixHome = '$(vL.ContainerPathName)'; // Create Variable for Home Container prefix (vL.ContainerPrefixHome)
+
+
+///$tab Variables
+// Sub folder names in 0.Template (vG.TemplatePath) folder and others
+// Change here if changing container sub folder names (localize)
+LET vL.ContainerTemplate='1.ContainerTemplate';
+LET vL.VariableTemplate='3.VariableTemplates';
+LET vL.ContainerMapTemplates ='4.ContainerMapTemplates';
+LET vL.ContainerUpgrades ='5.ContainerUpgrades';
+LET vL.VariableEditorPath='6.Script\2.VariableEditor';
+LET vL.AdministrationContainer='Admin';
+LET vL.BaseVariableTemplate='3.Include\1.BaseVariable';
+LET vL.ContainerStructureTemplate='2.ContainerStructureTemplate';
+LET vL.VariableEditorVersion='1.5.1';
+// Localize ends here
+
+
+LET vL.DocumentName=DocumentName();
+
+// If templates do not exist no Admin 
+call vL.FileExist ('$(vG.TemplatePath)\$(vL.ContainerTemplate)')
+if '$(vL.FileExist)' = 'true' then
+	let vL.Administrator='YES';
+	
+	if '$(vL.WizardMode)'='YES' then // If executed by upgrade Wizard
+		LET vL.AvalibleUpdates='Execute';
+		SET ErrorMode=0; // do not stop script if error
+		LET vL.WizardMode= '$(vL.Disable_CMD_Execution)'; 
+		SET vL.RunBatchMode= 'YES';
+	endif
+	
+	if trim(upper('$(vL.RunBatchMode)'))= 'YES'then //If batch mode is executing VariableEditor
+		LET vL.Execute='YES';
+		LET vL.SpecialSwitches='YES';		
+		LET vL.Disable_CMD_Execution='No';
+		LET vL.AvalibleUpdates='Execute';
+		SET ErrorMode=0; // do not stop script if error
+	endif
+	
+ else 
+ 	let vL.Administrator='NO';
+endif
+
+//Creating Variable for relative path to BaseVariables
+LET vL.Base_Folders_Path=subfield('$(vG.BaseVariablePath)','$(vG.BasePath)',-1);
+
+if vL.ContainerVariable='Home' then // If vL.ContainerVariable default the home vG.BaseParh should be used
+
+	let vL.BasePath='$(vG.BasePath)';
+	let vL.BaseVariablePath='$(vG.BaseVariablePath)';
+	let vL.ContainerVariable='$(vL.ContainerPrefixHome)'; // Change Home to current container name
+else
+
+// Creating a local vG.BaseVariablePath
+let vL.BasePath='$(vG.$(vL.ContainerVariable)BasePath)';
+let vL.BaseVariablePath='$(vL.BasePath)$(vL.Base_Folders_Path)';
+endif
+
+// Check if Administration container is selected
+if not lower('$(vL.BasePath)') = lower('$(vG.$(vL.AdministrationContainer)BasePath)') then
+	Let vL.NotAdminContainer = 'True';
+else 
+	Let vL.NotAdminContainer = 'False';
+endif
+
+
+// Validate if Robocopy exist, if yes vL.RobocopyExist=1
+call vL.FileExist ('$(WinPath)\System32\Robocopy.exe') 
+
+If vL.FileExist = 'true' then 
+let vL.RobocopyExist=1;
+ELSE
+let vL.RobocopyExist=0;
+endif
+
+
+///$tab Create New Variable Files
+// Creates a new variable file
+If not '$(vL.CreateNewVariableFile)'='' and not '$(vL.ShowVariableFilePopup)' = '' and '$(vL.ResetVariables)'= '' then 
+
+	LET vL.CreateNewVariableFile= trim(purgechar('$(vL.CreateNewVariableFile)','\/:*?"><|%$()')); // clean up illegal charters
+
+	If not lower(right('$(vL.CreateNewVariableFile)',9))= '.variables' then // Check if Variables name exist in file
+		LET vL.CreateNewVariableFile='$(vL.CreateNewVariableFile)'&'.Variables';
+	endif
+	call vL.FileExist ('$(vL.BaseVariablePath)$(vL.CreateNewVariableFile).csv')
+	if not lower(left('$(vL.CreateNewVariableFile)',4))= 'del ' and vL.FileExist = 'false' then //Check if Del is used 
+
+	NewVariableFile: // Create new file
+	LOAD * INLINE [
+    	VariableName, VariableValue, Comments, Priority, no
+    	"","","","",1
+    	"","","","",2
+    	"","","","",3
+    	"","","","",4];
+   
+	STORE VariableName, VariableValue, Comments, Priority from NewVariableFile into '$(vL.BaseVariablePath)\$(vL.CreateNewVariableFile).csv' (txt); //Store new File
+	DROP Table NewVariableFile;
+	let vL.ShowVariableFilePopup='created'; // Shows popup box that new variable file have been created
+	
+	Let vL.VariableFile = '$(vL.CreateNewVariableFile)';
+	
+	if not '$(vL.SystemVariableTemplate)'= '' then // Check if Variable File created by a Template, if yes reload the template else reload the new file
+		let vL.ResetVariables= 'true';
+	endif
+	
+	elseif lower(FileTime('$(vL.BaseVariablePath)\'&right('$(vL.CreateNewVariableFile)',(len('$(vL.CreateNewVariableFile)')-4))&'.csv')) > 0 and not lower(right('$(vL.CreateNewVariableFile)',(len('$(vL.CreateNewVariableFile)')-4)))= 'custom.variables' then//Delete file if del is used in front and file exists
+    LET vL.CreateNewVariableFile= right('$(vL.CreateNewVariableFile)',(len('$(vL.CreateNewVariableFile)')-4)); //Remove Del 
+	execute cmd.exe /C pushd ^"$(vL.BaseVariablePath)^" & del ^"$(vL.CreateNewVariableFile).csv^" /Q & popd;
+	execute cmd.exe /C pushd ^"$(vL.BaseVariablePath)^" & del ^"$(vL.BaseVariablePath)\$(vL.CreateNewVariableFile)_Backup.csv^" /Q & popd;
+
+	let vL.ShowVariableFilePopup='deleted'; // variable file deleted popup box
+	Let vL.VariableFile = 'Custom.Variable'; //Reset VariableFile when deleted
+	let vL.ResetVariables= '';
+	ELSE
+	let vL.ShowVariableFilePopup=' error'; // have found duplication popup box
+	let vL.ResetVariables= '';
+	endif
+	
+	Let vL.CreateNewVariableFile=;
+	Let vL.CreateVariableFile=;
+ELSE
+let vL.ShowVariableFilePopup=''; // Hides new variable file have been created popup box
+endif
+
+//Reset Variable
+///$tab GlobalVariable
+// load in all avalible VariableFiles and store as VariableFile Table
+for each File in filelist ('$(vL.BaseVariablePath)\*.csv')
+if index('$(File)' , 'Backup')=0 and index('$(File)' , 'ContainerMap')=0 then // Removing Backup copies and Container Map
+VariableFile:
+Load replace(subfield('$(File)', '\' ,-1),'.csv','') as VariableFileName // remove path and .csv
+autogenerate 1;
+endif
+next File
+
+
+// setting what global variable file to load
+let vL.VariableFile2='$(vL.VariableFile)'&'$(vL.BackupSuflix)';
+
+// Check if path to cvs file exists
+call vL.FileExist ('$(vL.BaseVariablePath)$(vL.VariableFile2).csv')
+if vL.FileExist = 'false' then; // '### Did not find $(vL.BaseVariablePath)$(vL.VariableFile2).csv find avalible file'; 
+	SET vL.BackupSuflix = '';
+	Let vL.VariableFile = peek('VariableFileName',0,'VariableFile');
+	let vL.VariableFile2 = '$(vL.VariableFile)';
+endif; 
+
+// Changing Inputfields depending on role
+if '$(vL.RunBatchMode)'='NO' and trim(upper('$(vL.Execute)'))='NO' and '$(vL.SpecialSwitches)'='NO' and not '$(vL.AvalibleUpdates)' ='Execute' then // If execting in batch Mode skip inputfields
+	if '$(vL.Administrator)'='YES' then // If running in Administration Container
+	inputfield [VariableName],[VariableValue],[Comments],[Priority],[ContainerPathName],[ContainerFolderName],[ContainerComments],[RootPath];
+	ELSE // If not running in Admin container
+		inputfield [VariableName],[VariableValue],[Comments],[Priority];
+	endif
+endif 
+
+
+call vL.FileExist ('$(vG.TemplatePath)$(vL.VariableTemplate)\$(vL.SystemVariableTemplate).csv');
+
+if '$(vL.ResetVariables)'= 'true' and '$(vL.FileExist)' = 'true' then //Load variable file from a template
+Variables: 
+LOAD VariableName, VariableValue, Comments, Priority, RowNo( ) as no
+FROM
+[$(vG.TemplatePath)$(vL.VariableTemplate)\$(vL.SystemVariableTemplate).csv] // Loading SystemVariable Template (found in settings)
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+// If simular template file exists (name before.) use this one as default.
+call vL.FileExist ('$(vL.BaseVariablePath)\'&subfield('$(vL.SystemVariableTemplate)', '.' ,1)&'Variables.csv');
+if '$(vL.FileExist)'= 'true' and not '$(vL.ShowVariableFilePopup)'='created' then //if '$(vL.ShowVariableFilePopup)'='created' a new file have been created and that one should be default instead
+Let vL.VariableFile=subfield('$(vL.SystemVariableTemplate)', '.' ,1)&'Variables';
+endif
+
+elseif filesize('$(vL.BaseVariablePath)$(vL.VariableFile2).csv') > 0 then //Use selected variable file (Default)
+Variables:
+
+LOAD  PurgeChar(VariableName,'+-=\/:*?"><|%$();,'&chr(39)) as VariableName,  VariableValue, Comments, Priority, RowNo( ) as no
+FROM
+[$(vL.BaseVariablePath)$(vL.VariableFile2).csv]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+endif
+
+
+// Insert enpty row in the end
+LET vL.no = NoOfRows('Variables')+1;
+Concatenate
+LOAD * INLINE [
+    	VariableName,  VariableValue, Comments, Priority, no	
+    	"","","","",$(vL.no)
+		];
+
+
+//Reset Variable
+SET vL.no=;
+let vL.Backup='false';
+LET vL.VariableFile2='$(vL.VariableFile)';
+SET vL.BackupSuflix ='';
+SET vL.ResetVariables = '';
+//Clear variables
+
+///$tab ContainerMap
+
+if '$(vL.ResetContainerMap)'= 'false' then // Loading selected Container Map
+
+ContainerMap_tmp:
+
+LOAD ContainerPathName as ContainerPathName_tmp,ContainerFolderName as ContainerFolderName_tmp,ContainerComments as ContainerComments_tmp, RootPath as RootPath_tmp
+FROM
+[$(vG.BaseVariablePath)ContainerMap$(vL.ContainerBackupSuflix).csv] //If needed retrive backup copy (vL.BackupSuflix)
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+ELSE  // Loading in Containet Map Template
+
+// Check if path to cvs file exists
+call vL.FileExist ('$(vG.TemplatePath)\$(vL.ContainerMapTemplates)\$(vL.ContainerMapTemplate).csv')
+if vL.FileExist = 'false' then; trace '### Did not find $(vG.TemplatePath)\$(vL.ContainerMapTemplates$)\$(vL.ContainerMapTemplate).csv ending script'; 
+	exit script; // ending script
+endif;
+
+ContainerMap_tmp:
+LOAD ContainerPathName as ContainerPathName_tmp,ContainerFolderName as ContainerFolderName_tmp,ContainerComments as ContainerComments_tmp, RootPath as RootPath_tmp
+FROM
+[$(vG.TemplatePath)\$(vL.ContainerMapTemplates)\$(vL.ContainerMapTemplate).csv]
+(txt, utf8, embedded labels, delimiter is ',', msq);
+
+
+endif
+
+// Reset Container number
+SET vL.no = 1;
+
+let xx = NoOfRows('ContainerMap_tmp');
+
+for tt = 0 to xx
+
+	
+	LET vL.ContainerPathName = PurgeChar(trim(peek(FieldName(1,'ContainerMap_tmp'),$(tt),'ContainerMap_tmp')),'&\/:*?"><|%$()-=,; '&chr(39)); // ContainerPathName variable field
+	LET vL.ContainerFolderName = Replace(PurgeChar(trim(peek(FieldName(2,'ContainerMap_tmp'),$(tt),'ContainerMap_tmp')),'&:*?"><|%$()=,;'&chr(39)),'/','\'); // ContainerFolderName field
+	LET vL.ContainerComments = PurgeChar(trim(peek(FieldName(3,'ContainerMap_tmp'),$(tt),'ContainerMap_tmp')),';,'&chr(39)); // Container Comments
+	LET vL.AltRootPath = PurgeChar(trim(peek(FieldName(4,'ContainerMap_tmp'),$(tt),'ContainerMap_tmp')),'=;,'&chr(39)); // RootPath other than default
+	
+
+// Check if container Names exist
+if not '$(vL.ContainerFolderName)' = ''  then 
+		
+		if '$(vL.ContainerPathName)' ='' then // If ContainerPathName is empty, create one
+			LET vL.ContainerPathName = '$(vL.ContainerFolderName)';
+		endif
+		
+		if  not '$(vL.AltRootPath)' = '' then	// Check if vL.AltRootPath field is used
+				
+				if not right('$(vL.AltRootPath)' , 1 ) ='\' then // Check and add '\' in root path
+					LET vL.AltRootPath='$(vL.AltRootPath)\';
+				endif;
+				
+			LET vL.CurrentContainerPath = '$(vL.AltRootPath)$(vL.ContainerFolderName)'; // Creating Container root path based on vL.AltRootPath	
+		else
+			let vL.CurrentContainerPath ='$(vG.RootPath)$(vL.ContainerFolderName)'; // Creating Container root path based on vG.RootPath
+		endif;
+		
+		
+		// LET vL.ContainerBasePathVariable = 'vG.'&'$(vL.ContainerPathName)'&'BasePath'; // Creating BasePath Variables
+		LET vL.ContainerBasePathVariable = '$(vL.ContainerPathName)'; // Creating BasePath Variables
+		
+		// If Container is missing tag as Orphan
+		call vL.FileExist ('$(vL.CurrentContainerPath)')
+	
+	if vL.FileExist = 'false' and not '$(vL.CurrentContainerPath)'='' then
+		LET vL.CurrentContainerPath = 'Orphans\$(vL.ContainerFolderName)';
+		LET vL.OrphansExist=1; // vL.OrphansExist if Orphans exists enable Creation of containers box
+		LET vL.ShowCreateNewC = 1; // Show Create Container Box
+		LET vLShowUpdateMap = 0; // Show Update Map Box
+		LET vLShowPopupMap = 1; // Show Create Container Box
+		
+	else 
+		LET vL.ActiveBasePathVariable = '$(vL.ContainerBasePathVariable)';
+	endif;
+	
+	
+endif;
+
+
+
+// Insert five enpty rows if csv file is full
+if tt=xx and not trim(peek(FieldName(1,'ContainerMap_tmp'),$(tt)-1,'ContainerMap_tmp'))= '' then 
+ContainerMap:
+LOAD * INLINE [
+    	ContainerPathName,ContainerFolderName,ContainerComments,RootPath, CurrentContainerPath,BasePathVariable,ActiveBasePathVariable,Containerno
+    	"","","","","","","",$(vL.no)
+    	"","","","","","","",$(vL.no)+1
+    	"","","","","","","",$(vL.no)+2
+    	"","","","","","","",$(vL.no)+3
+    	"","","","","","","",$(vL.no)+5
+		];
+		
+LET vL.no = vL.no + 5;
+endif
+
+if not tt=xx then
+	ContainerMap:		
+		Load  '$(vL.ContainerPathName)' as ContainerPathName, '$(vL.ContainerFolderName)' as ContainerFolderName, '$(vL.ContainerComments)' as ContainerComments,'$(vL.AltRootPath)' as RootPath, '$(vL.CurrentContainerPath)' as CurrentContainerPath, '$(vL.ContainerBasePathVariable)' as BasePathVariable, '$(vL.ActiveBasePathVariable)' as ActiveBasePathVariable, '$(vL.no)' as Containerno 
+		autogenerate 1;
+		
+	LET vL.no = vL.no + 1;
+	SET vL.ActiveBasePathVariable =;
+	SET vL.ContainerPathName = ;
+	SET vL.ContainerFolderName = ;
+	SET vL.ContainerComments = ;
+	SET vL.RootPath = ;
+	SET vL.CurrentContainerPath = ;
+	SET vL.ContainerBasePathVariable = ;
+	SET vL.RootPath2 =;
+	SET vL.AltRootPath =;
+endif	
+		
+
+
+next;
+
+
+drop Table ContainerMap_tmp ;
+///$tab Create Containers
+if vL.OrphansExist <> 1 then // if no orphans exists no point in creating containers
+SET vL.Execute = 'NO';
+//SET vL.SpecialSwitches = 'YES'; // Execute special switches instead
+LET vLShowPopupMap = 0; // Remove Create Container Box
+LET vLShowUpdateMap = 0; // Remove Create Container Box
+LET vL.ShowCopyContainer = 0; // Remove Create Container Box
+LET vL.ShowCreateNewC = 0; // Remove Create Container Box
+
+endif
+
+if trim(upper('$(vL.Execute)'))='YES' and '$(vL.Administrator)'='YES' and upper('$(vL.Disable_CMD_Execution)')='NO' then
+
+let xxx = NoOfRows('ContainerMap');
+
+for ttt = 0 to xxx -1
+
+LET L.ContainerFolderName  = trim(peek('ContainerFolderName',$(ttt),'ContainerMap'));
+
+LET vL.ContainerFolderName = trim(peek(FieldName(2,'ContainerMap'),$(ttt),'ContainerMap')); // ContainerPathName variable field
+LET vL.RootPath = trim(peek(FieldName(4,'ContainerMap'),$(ttt),'ContainerMap')); // RootPath other than default
+LET vL.CurrentContainerPath = trim(peek(FieldName(5,'ContainerMap'),$(ttt),'ContainerMap')); // ContainerFolderName field
+
+if 	left('$(vL.CurrentContainerPath)',7)='Orphans' then // only populate when container is missing (Orphan)
+
+// change from vG.RootPath if RootPath other than default
+if not '$(vL.RootPath)' = '' then 
+		let vL.ContainerPath = '$(vL.RootPath)'&'\';
+	ELSE
+		let vL.ContainerPath = '$(vG.RootPath)';
+ENDIF;
+
+
+if vL.RobocopyExist=1 then // Executes Robocopy script to copy new container, check ContainerCopy.log for more information and execute command line scripts to set attribute Read Only on qvs scripts 
+ execute cmd.exe /Q /C pushd ^"$(vL.ContainerPath)^" & %windir%\System32\robocopy ^"$(vG.TemplatePath)\$(vL.ContainerTemplate)^" ^"$(vL.ContainerPath)$(vL.ContainerFolderName)^" /E /XN /R:4 /W:1 > nul & ATTRIB +R ^"$(vL.ContainerFolderName)\*.qvs^" /S  & ATTRIB +R ^"$(vL.ContainerFolderName)^" & popd;
+else
+// Execute command line scripts to copy new container
+execute cmd.exe /Q /C pushd ^"$(vL.ContainerPath)^" & %windir%\System32\xcopy ^"$(vG.TemplatePath)\$(vL.ContainerTemplate)^" ^"$(vL.ContainerPath)$(vL.ContainerFolderName)^" /E /Y /I /C /D /H /R  > nul & ATTRIB +R ^"$(vL.ContainerFolderName)\*.qvs^" /S  & ATTRIB +R ^"$(vL.ContainerFolderName)^" & popd;;
+endif
+
+sleep 500;
+
+
+
+	if '$(vL.CopyVE)' = 'Yes' then // Copy Variable Editor to the new Container if setting vL.CopyVE = Yes
+		if vL.RobocopyExist=1 then
+		 	execute cmd.exe /C start /MIN "" %windir%\System32\robocopy ^"$(vG.BasePath)$(vL.VariableEditorPath)^" ^"$(vL.ContainerPath)$(vL.ContainerFolderName)\$(vL.VariableEditorPath)^" ^"$(vL.DocumentName)^" /E /XN /R:4 /W:1 ;
+		else
+			execute cmd.exe /C start /MIN "" %windir%\System32\xcopy ^"$(vG.BasePath)$(vL.VariableEditorPath)\$(vL.DocumentName)^" ^"$(vL.ContainerPath)$(vL.ContainerFolderName)\$(vL.VariableEditorPath)\^" /E /Y /I /C; //Copy Variable Editor to Containers
+		endif
+	endif
+
+if '$(vL.CopyCM)' = 'Yes' then
+// IF copy container Map to all containers = Yes then update container Map all containers
+	if not '$(vL.RootPath)' = '' and '$(vL.CopyToAltPath)' = 'No' then			
+	ELSE
+		STORE ContainerPathName,ContainerFolderName,ContainerComments,RootPath from ContainerMap into '$(vL.ContainerPath)$(vL.ContainerFolderName)\$(vL.Base_Folders_Path)\ContainerMap.csv' (txt); //Store new File
+    endif
+endif
+	
+
+$(Include=.\VariableEditor.qvs); // Will execute optional script used when adding additional container sub folders during container creation	
+
+endif;
+
+// cleanup
+SET vL.ContainerFolderName = ;
+SET vL.RootPath = ;
+SET vL.CurrentContainerPath = ;
+//SET vL.SpecialSwitches = 'NO';
+
+
+
+SET vL.ResetContainerMap = 'false';
+SET vL.InsertBlankRow =;
+SET vL.no=;
+SET vL.ContainerBackupSuflix = '';
+
+next;
+//Remove popup-box
+SET vL.ShowCreateNewC = 0; // Hide Create Container Box
+SET  vLShowUpdateMap = 0; // Hide Create Container Box
+SET  vLShowPopupMap = 0; // Hide Create Container Box
+SET ttt=;
+SET xxx=;
+SET vL.Execute = 'NO';
+endif
+
+///$tab Special Switches
+// Do not execute special switches if not admin
+if '$(vL.Administrator)'='YES' and '$(vL.SpecialSwitches)'='YES' and upper('$(vL.Disable_CMD_Execution)')='NO' then
+
+//If copy ContainerMap to Shared Folders setting = yes then update ContainerMap to the Shared container
+	if '$(vL.CopyCM)' = 'No' and filesize('$(vG.SharedBaseVariablePath)\ContainerMap.csv') > 0 then
+		STORE ContainerPathName,ContainerFolderName,ContainerComments,RootPath from ContainerMap into '$(vG.SharedBaseVariablePath)\ContainerMap.csv' (txt); //Store new File
+	endif;
+
+ // If SystemVariables setting = yes then update System Variables to all containers
+let xx = NoOfRows('ContainerMap');
+for tt = 0 to xx-1 
+
+LET vL.ContainerPathName = PurgeChar(trim(peek(FieldName(1,'ContainerMap'),$(tt),'ContainerMap')),'\/:*?"><|%$()-=,; '&chr(39)); // ContainerPathName variable field
+LET vL.ContainerFolderName = trim(peek(FieldName(2,'ContainerMap'),$(tt),'ContainerMap')); // ContainerPathName variable field
+LET vL.RootPath = trim(peek(FieldName(4,'ContainerMap'),$(tt),'ContainerMap')); // RootPath other than default
+LET vL.CurrentContainerPath = trim(peek(FieldName(5,'ContainerMap'),$(tt),'ContainerMap')); // ContainerFolderName field
+
+// change from vG.RootPath if RootPath other than default
+// Mark Alt Path Containers as Orphans if Copy swiths is  set to No
+	if '$(vL.RootPath)' = '' then 
+			let vL.ContainerPath = '$(vG.RootPath)';
+		ELSEIF '$(vL.CopyToAltPath)' = 'No' then 
+		 	LET vL.CurrentContainerPath = 'Orphans';
+		else
+			let vL.ContainerPath = '$(vL.RootPath)'&'\';
+	ENDIF;
+
+// Run execution if container exists
+if 	not left('$(vL.CurrentContainerPath)',7)='Orphans' and not '$(vL.ContainerFolderName)'='' then 
+
+	
+	// IF copy container Map to all containers = Yes then update container Map all containers
+	if '$(vL.CopyCM)' = 'Yes' and not filetime('$(vL.ContainerPath)$(vL.ContainerFolderName)\$(vL.Base_Folders_Path)ContainerMap.csv') = filetime('$(vG.BaseVariablePath)ContainerMap.csv') and not '$(vL.AdministrationContainer)' = '$(vL.ContainerPathName)' then // Copy Container Map to all containers
+		STORE ContainerPathName,ContainerFolderName,ContainerComments,RootPath from ContainerMap into '$(vL.ContainerPath)$(vL.ContainerFolderName)\$(vL.Base_Folders_Path)\ContainerMap.csv' (txt); //Store new File
+	endif
+	
+	
+endif
+
+// Reset Variables
+SET vL.ContainerFolderName = ;
+SET vL.RootPath = ;
+SET vL.CurrentContainerPath = ;
+
+next;
+endif;
+
+// load in all avalible templates and store as VariableTemplate Table
+for each File in filelist ('$(vG.TemplatePath)\$(vL.VariableTemplate)\*.csv')
+VariableTemplate:
+Load replace(subfield('$(File)', '\' ,-1),'.csv','') as VariableTemplateFileName // remove path and .csv
+autogenerate 1;
+next File
+
+// load in all avalible templates and store as Container Map Templates Table
+for each File in filelist ('$(vG.TemplatePath)\$(vL.ContainerMapTemplates)\*.csv')
+ContainerTemplate:
+Load replace(subfield('$(File)', '\' ,-1),'.csv','') as ContainerTemplateFileName // remove path and .csv
+autogenerate 1;
+next File
+
+
+
+
+// Variable Cleanup
+SET vL.SpecialSwitches = 'NO';
+// SET vL.Base_Folders_Path = ;
+SET File = ;
+SET tt = ;
+SET xx = ;
+SET vL.OrphansExist = ;
+
+///$tab Container Upgrade Functions
+call vL.FileExist ('$(vG.TemplatePath)\$(vL.ContainerUpgrades)\Version*.txt')
+if vL.FileExist = 'true' and '$(vL.Administrator)'='YES' and upper('$(vL.Disable_CMD_Execution)')='NO' then
+
+
+
+SET vL.UpgradePath = '$(vG.TemplatePath)\$(vL.ContainerUpgrades)';
+
+//call DoDir (vG.RootPath,vL.DoDirFileList,vL.Suflix);
+call DoDir ('$(vL.UpgradePath)','UpgradeFiles');
+
+// Execute Upgrade if upgrade button is pressed
+if '$(vL.AvalibleUpdates)' = 'Execute' then;
+let xx = NoOfRows('ContainerMap');
+
+for tt = 0 to xx-1
+
+
+
+LET vL.ContainerFolderName = trim(peek(FieldName(2,'ContainerMap'),$(tt),'ContainerMap')); // ContainerPathName variable field
+LET vL.RootPath = trim(peek(FieldName(4,'ContainerMap'),$(tt),'ContainerMap')); // RootPath other than default
+LET vL.CurrentContainerPath = trim(peek(FieldName(5,'ContainerMap'),$(tt),'ContainerMap')); // ContainerFolderName field
+
+// change from vG.RootPath if RootPath other than default
+// Mark Alt Path Containers as Orphans if Copy swiths is set to No
+	if '$(vL.RootPath)' = '' then 
+			let vL.ContainerPath = '$(vG.RootPath)';
+		ELSEIF '$(vL.CopyToAltPath)' = 'No' then 
+		 	LET vL.CurrentContainerPath = 'Orphans';
+		else
+			let vL.ContainerPath = '$(vL.RootPath)'&'\';
+	ENDIF;
+
+// Run execution if container exists
+if 	left('$(vL.CurrentContainerPath)',7) <>'Orphans' and '$(vL.ContainerFolderName)' <> '' then // only upgrade containers that exists
+
+	
+// Execute command line scripts to upgrade container
+// Remove version file
+execute cmd.exe /C pushd ^"$(vL.ContainerPath)$(vL.ContainerFolderName)^" & del ^"Version*.txt^" /Q & popd;
+// Upgrade Containers
+sleep 200;
+
+if vL.RobocopyExist=1 then
+	execute cmd.exe /Q /C pushd ^"$(vL.ContainerPath)^" & %windir%\System32\robocopy ^"$(vL.UpgradePath)^" ^"$(vL.ContainerFolderName)^" /E /R:4 /W:1 & ATTRIB +R +H ^"$(vL.ContainerFolderName)\InitLink.qvs^" & ATTRIB +R +H ^"$(vL.ContainerFolderName)\desktop.ini^" & ATTRIB +R ^"$(vL.ContainerFolderName)^" & popd;
+else 
+	execute cmd.exe /Q /C pushd ^"$(vL.ContainerPath)^" &  %windir%\System32\xcopy ^"$(vL.UpgradePath)^" ^"(vL.ContainerFolderName)^" /E /Y /I /C /H /R /D  & ATTRIB +R +H ^"$(vL.ContainerFolderName)\InitLink.qvs^" & ATTRIB +R +H ^"$(vL.ContainerFolderName)\desktop.ini^" & ATTRIB +R ^"$(vL.ContainerFolderName)^" & popd;
+endif
+
+sleep 500;
+execute cmd.exe /Q /C   ;
+sleep 100;
+
+endif;
+// Reset Variables
+SET vL.ContainerFolderName = ;
+SET vL.RootPath = ;
+SET vL.CurrentContainerPath = ;
+
+
+next;
+
+//remove version in templates
+execute cmd.exe /Q /C  pushd  ^"$(vG.TemplatePath)^" & del ^"$(vL.ContainerTemplate)\Version*.txt^" /Q & popd;
+
+// Upgrading templates
+if vL.RobocopyExist=1 then
+	execute cmd.exe /Q /C pushd ^"$(vG.TemplatePath)^" & %windir%\System32\robocopy ^"$(vL.UpgradePath)^" ^"$(vL.ContainerTemplate)^" /E /R:4 /W:1 & ATTRIB +R  ^"$(vL.ContainerTemplate)^"  & popd;
+else
+	execute cmd.exe /Q /C pushd ^"$(vG.TemplatePath)^" & %windir%\System32\xcopy ^"$(vL.UpgradePath)^" ^"$(vL.ContainerTemplate)^" /E /Y /I /C /H /R /D & ATTRIB +R  ^"$(vL.ContainerTemplate)^"  & popd;
+endif
+//remove version in RootPath
+execute cmd.exe /Q /C  pushd  ^"$(vG.RootPath)^" & del Version*.txt /Q & popd;
+
+// add new Version in RootPath 
+if vL.RobocopyExist=1 then
+	execute cmd.exe /Q /C start /MIN "" %windir%\System32\robocopy ^"$(vL.UpgradePath)^" ^"$(vG.RootPath).^" ^"Version*.txt^" /R:4 /W:1 ;
+	
+else
+	execute cmd.exe /Q /C start /MIN "" %windir%\System32\xcopy ^"$(vL.UpgradePath)\Version*.txt^" ^"$(vG.RootPath)^"  /Y ;
+endif
+
+// Remove upgrades after execution 
+sleep 3000;
+execute cmd.exe /Q /C pushd  ^"$(vG.TemplatePath)^" & del ^"$(vL.ContainerUpgrades)\*.*^" /Q /S /F & rmdir /Q /S ^"$(vL.ContainerUpgrades)^" & mkdir ^"$(vL.ContainerUpgrades)^" & popd;
+
+sleep 1000;
+
+endif
+
+
+//Clean variables
+SET vL.UpgradePath = ;
+SET tt = ;
+SET xx = ;
+let vL.RobocopyExist=;
+
+
+SET vL.AvalibleUpdates = 'Yes';
+ELSE
+SET vL.AvalibleUpdates = 'No';
+endif;
+
+// Turn of Batch Mode (if activated)
+if trim(upper('$(vL.RunBatchMode)'))= 'YES' then //If batch mode is executing VariableEditor
+		LET vL.Disable_CMD_Execution='Yes';
+		LET vL.RunBatchMode='NO';
+		SET ErrorMode=1;
+endif
+
+if not '$(vL.WizardMode)'='' then  //Special workaround to get vL.Disable_CMD_Execution switsh back to original when running wizard mode
+			LET vL.Disable_CMD_Execution= '$(vL.WizardMode)';
+			LET vL.WizardMode='';
+endif
+
+//***********************************
+// Application written by Magnus Berg
+// QlikTech International AB
+//***********************************

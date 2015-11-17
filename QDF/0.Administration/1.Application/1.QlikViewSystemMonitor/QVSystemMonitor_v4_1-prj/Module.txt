@@ -1,0 +1,59 @@
+﻿Sub Zoom 
+	ActiveDocument.ActiveSheet.FitZoomToWindow
+End Sub
+
+sub iPadZoom
+	set mysheet=ActiveDocument.ActiveSheet
+	set sp=mysheet.GetProperties
+	sp.ZoomFactor = .75
+	'sp.ZoomFactor =  ActiveDocument.GetVariable("ZoomLevel")
+	'ZoomFactor.SetContent, true
+	mysheet.SetProperties sp
+	
+	ActiveDocument.GetApplication.WaitForIdle	
+	
+	ActiveDocument.ActiveSheet.ApplyZoomToAllSheets
+end sub
+
+sub ResetZoom
+	set mysheet=ActiveDocument.ActiveSheet
+	set sp=mysheet.GetProperties
+	sp.ZoomFactor = 1.0
+	'sp.ZoomFactor =  ActiveDocument.GetVariable("ZoomLevel")
+	'ZoomFactor.SetContent, true
+	mysheet.SetProperties sp
+	
+	ActiveDocument.GetApplication.WaitForIdle	
+	
+	ActiveDocument.ActiveSheet.ApplyZoomToAllSheets
+end sub
+
+sub SupportReqs
+
+	msgbox("When submitting a support request, please always include or have the following information available:") _
+     & Chr(13)&(" * The relevant QlikView 16-digit license number") _
+   & Chr(13)&("* The full QlikView version number (e.g., 9.0.7119)") _
+   & Chr(13)&("* A complete description of the problem experienced including details on how to reproduce it") _
+   & Chr(13)&("* A sample .qvw file, if possible") _
+   & Chr(13)&("* Technical details of the host server/machine, including:") _
+   & Chr(13)&("* Windows operating system") _
+   & Chr(13)&("* 32bit or 64bit environment") _
+   & Chr(13)&("* Number of CPUs and amount of RAM") _
+   & Chr(13)&("* For QlikView Server/Publisher, please provide the relevant log files")
+End sub 
+
+sub HideTabrow
+rem Hides tabrow in document properties
+ set docprop = ActiveDocument.GetProperties
+ docprop.ShowTabRow=false
+ ActiveDocument.SetProperties docprop
+End sub
+
+sub ShowTabrow
+rem Hides tabrow in document properties
+ set docprop = ActiveDocument.GetProperties
+ ActiveDocument.GetApplication.WaitForIdle
+ docprop.ShowTabRow=true
+  ActiveDocument.SetProperties docprop
+  ActiveDocument.GetApplication.WaitForIdle
+End sub

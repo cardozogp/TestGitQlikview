@@ -1,0 +1,6 @@
+﻿VariableName,VariableValue,Comments,Priority
+vG.SumYear1997,"Sum(If(Year(OrderDate)=1997, Quantity*UnitPrice))","Sum Year 1997",KPI
+vG.SumYear1998,"Sum(If(Year(OrderDate)=1998, Quantity*UnitPrice))","Sum Year 1998",KPI
+vG.OrderValue,"Sum(Quantity*UnitPrice)",Sales & Avg order value,KPI
+vG.SalesIndex,"($(vG.SumYear1998)/$(vG.SumYear1997))",Sales Index 98/97,KPI
+,,,

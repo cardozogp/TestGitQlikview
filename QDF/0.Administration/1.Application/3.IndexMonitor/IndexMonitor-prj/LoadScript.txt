@@ -1,0 +1,56 @@
+﻿///$tab QlikView Development Framework
+let vG.BasePath=; 
+// Basic search for 1.Init.qvs
+$(Include=..\..\..\..\InitLink.qvs);
+$(Include=..\..\..\InitLink.qvs);
+$(Include=..\..\InitLink.qvs);
+$(Include=..\InitLink.qvs);
+Exit script when '$(vG.BasePath)'= '';
+
+// Locale example for US English
+$(Include=$(vG.LocalePath)\1.US.qvs);
+///$tab Main
+
+Call IndexLoad('','','','','','IndexTable'); 
+if NoOfFields('IndexTable') >0 then // Validate if IndexTable Exists
+
+join (IndexTable)
+LOAD Distinct
+QVDFields,
+QVDTag,
+mid(QVDFields,2, len(QVDFields)-2) as QVDFields2, //Removes [,] in the beginning and end of field
+mid(QVDTag,2, len(QVDTag)-2) as QVDTag2 //Removes [,] in the beginning and end of field
+RESIDENT IndexTable;
+
+//IndexTable_tmp:
+join (IndexTable)
+LOAD Distinct
+QVDSourcePath,
+QVDFileName,
+autonumber(QVDSourcePath & QVDFileName) as QVD_ID
+RESIDENT IndexTable;
+
+Tags: // create Tags table 
+LOAD DISTINCT
+ QVD_ID,
+SubField(QVDTag2,',') as Tags
+RESIDENT IndexTable;
+
+
+Fields: // create Fields table 
+LOAD DISTINCT
+ QVD_ID,
+SubField(QVDFields2,',') as Fields
+RESIDENT IndexTable;
+
+
+
+drop fields QVDFields,QVDFields2,QVDTag,QVDTag2; //Drop redundant fields
+
+
+
+
+ELSE
+trace '### DF Info, Could not find any Indexes';
+sleep 5000;
+endif

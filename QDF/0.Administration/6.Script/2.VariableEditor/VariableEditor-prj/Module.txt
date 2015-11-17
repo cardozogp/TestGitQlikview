@@ -1,0 +1,47 @@
+﻿
+
+sub ResetInputField
+' on Error Resume Next
+set fld=ActiveDocument.GetField("ContainerPathName")
+set fp = fld.GetProperties
+
+if  fp.IsInputField=True then
+set tb5=activedocument.fields("ContainerPathName")
+set tb6=activedocument.fields("ContainerFolderName")
+set tb7=activedocument.fields("ContainerComments")
+set tb8=activedocument.fields("RootPath")
+tb5.ResetInputFieldValues 0
+tb6.ResetInputFieldValues 0
+tb7.ResetInputFieldValues 0
+tb8.ResetInputFieldValues 0
+end if
+end sub
+
+sub ResetVariableInputField
+'On Error Resume Next
+set fld=ActiveDocument.GetField("VariableName")
+set fp = fld.GetProperties
+
+if fp.IsInputField=True then
+set tb1=activedocument.fields("VariableName")
+set tb2=activedocument.fields("VariableValue")
+set tb3=activedocument.fields("Comments")
+set tb4=activedocument.fields("Priority")
+tb1.ResetInputFieldValues 0
+tb2.ResetInputFieldValues 0
+tb3.ResetInputFieldValues 0
+tb4.ResetInputFieldValues 0
+end if
+end sub
+
+sub Reload
+' On Error Resume Next
+RunBatchMode = ActiveDocument.Variables("vL.RunBatchMode").GetContent.String
+if RunBatchMode="NO" then
+ActiveDocument.ReloadEX 1,1
+
+call ResetVariableInputField
+call ResetInputField
+
+end if
+end sub

@@ -1,0 +1,4338 @@
+﻿///$tab Change Log
+//11-29-2011 rtz
+
+//Resolution: 1280 x 800
+//
+
+//Version 2 November, 2011
+//- Management Console Audit Logging picked up in new Mgmt Audit tab (enable management audit logging by going to the C:\Program Files\QlikView\Management Service\QVManagementService.exe.config file and change
+//<!-- Enable logging of changes to QVPR. Requires restart of QMS after change. -->
+//    <add key="EnableAuditLogging" value="false" /> to "true", save, then restart your QMS service. 
+//	
+//- Cross release compatibility versions 10/11
+//- Salesforce logs picked up 
+//- QV11 Publisher log changes are accounted for if you are running QV11
+//- Ability to read QVS Event/Session/Performance logs from multiple cluster nodes. You can add additional nodes via the Setup tab. 
+//- Make sure to comment out the QVSClusterNode1 variable if you change the setting from your computer name, as it will reset every reload if not. 
+//- "Services" tab renamed to "Log Data"
+//- New Straight Table in Log Data tab for QV11 only 
+//- Link to QlikView Power Tools when in PC view 
+//- CH29 (User Access Summary) has DocName added to dimension
+//- DocName changed to DocumentName in AccessPointDocuments tab CH266
+//- Audit Log tab renamed to QVS Audit Log
+//- QVS Tables renamed to QVS Table Data
+//- QVS Audit Log script changed to "Resident Sessions;" 
+//- Log Locations updated
+//- QVSClusterNode1 must equal Computer Name for Access Point Documents to pull data
+
+//Version 3  April 2012
+//
+//
+//- Added IIS logging (multiple servers), OS Logging (multiple servers), QMC multiple servers, DSC multiple servers, QV Webserver multiple servers
+//- Reparsed some date/times, created new "Message" table to pull it all in together
+//
+//- Reconfigured the Setup tab
+//
+//
+//- No new mobile pages have been added or modified, please feel free to append or design as needed. 
+//- New "Log Analyzer" sheet
+//- Added "Architecture" tab so you can visually see your system
+//- Disabled Conditional Show based on CName for AccessPointDocuments and AccessPointUser tabs
+//- Swapped LanID with Authenticated User on all charts/tables where applicable
+//- Calc condition removed from CH266
+//- Swapped DocumentName field for SessionDocName on all applicable charts/tables
+//- Added "Distinct User-Docs" Pivot Table
+//- Removed AccessPointDocuments tab/load script
+//- Variable QVSPath changed to QVS Root on Setup Tab
+//- Added EndIf to the end of the second Management table in Management tab
+//- Changed Sort Order in Document Usage chart & changed max visible to 20 docs (enabled scrollbar)
+//- Changed Sort Order on CH29
+//- Added Legend to CH20
+//- Changed Sort Order on CH100
+//- Replaced Count(Distinct UserCountField) with Count(Distinct Authenticated User)
+//- Changed Sort Order on CH101
+//- Changed "Upper Working Set %" to "Low Working Set %"
+//- Added "WorkingSetMax" variable (Working Set High)
+//- Performance tab - reversed bar/line expressions for better readability. Added WorkingSetMin/Max reerence lines. Chaned LanID to AuthenticatedUser
+//- Changed Sort Order on "License Usage by Document" object (CH150). 
+//- Added Fast Change straight table to CH150
+//- Replaced LanID with AuthenticatedUser on License Usage Analysis chart
+//- Changed Sort Order on License Usage Analysis chart
+//- Added Working Set Low and High to Trends > MaxVM(YearWeek)
+//- Added Working Set Low and High to Trends > MaxVM(< 21 days)
+//- Swapped vMaxDay for MaxSessionDT in Max VM Commited (MB) - Last 21 Days (CH314)
+//- Changed Dimension Axis to vertical on CH271 (License Type Usage (Last 21 Days))
+//- Added a Static Max to CH316
+//- Replaced LanID with SessionDocName on Audit Tab "Document Object Usage By User" 
+//- DocName replaced with SEssionDocName and LanID replaced with Authenticated user on Audti Tab CH284
+//- Changed Audit Log tab load script to rename SessionDocName, [Session Start], User to AuthenticatedUser
+//- Added Dummy table for Audit Log
+//- Added DateHourKey for Audit Log
+//- Added vAudit, to be called on Date/Time tab for Audit timestamp information/conversion
+//- Removed WebSvc, DSC, QMS, QVS list boxes from "Log Data" tab
+//- Renamed "Log Data" sheet to "Connector Log Data"
+//- Removed Users tab in script
+//- Added Multi-Box on some sheets
+//- Removed Web Service table on QVS Tables sheet
+//- Removed Mgmt Service table on QVS Tables sheet
+//- Removed DSC table on QVS Tables sheet
+//- Created Audit Type-Object-Message field for display in the Message table Msg field
+//- Changed the Fields in Audit Log Details table (QVS Audit Log sheet) to Timestamp, AuthentcatedUser, SessionDocName, Type, Object, AuditMessage
+//- Added "Unsupported Ajax" object to the Dashboard (minimized)
+//- Changed LanID to Authenticated User in Plugin Maintenance object in Dashboard
+//- Removed INPUTFIELD APPath
+
+//********************
+//4/12/2012
+
+//- Made small adjustement to Performance Tab DateHourKey formatting
+
+
+
+//********************
+//4/15/2012
+
+//- Added significant Publisher modifications to the scripting, table structure, and chart objects
+//- Moved dimensional background color calculations to the load script as an alternative to the significant amount of memory the in-chart calc consumed
+//- Removed the restriction on the log analyzer table
+//- Integrated Publisher logging into the log analzyer table
+
+
+//********************
+//4/27/2012
+//- Changed the delimiter in the OS Logs tab to comma
+//- Reformatted and adjusted IIS timestamps to handle default Microsoft GMT settings
+//- Adjusted Publisher DateHourKey for non-8 character times
+//- Modification to Publisher table setup so more tasks make it into Log Analyzer table. Logging is better for QV11 users and execution status is limited for QV10
+//- Master Table - fixed code for non-Publisher users
+//- Master Table - Added OS Security Logs
+//- Setup tab - Changed to default locations for users with standalone environments to reload and go 
+//- Log Analyzer chart - Pub font color is white for better visibility
+
+
+
+//********************
+//6/10/2012
+//- Changed chart references of CommittedVM to AllocatedVM
+//- Adjusted the Architecture tab to auto populate based on variable settings (thanks to Magnus Berg!)
+//- Fixed typo for Windows Event logs on 3rd machine
+//- Added a real set of sample data
+//- 2 bookmarks added to help show troubleshooting. Notice on the Performance tab there is a memory spike on 5/30. Navigate over to the Log Analyzer tab and select the first bookmark. 
+//  Notice there is a VM Warning in the QVS Event logs. 
+//  The second bookmark expands the selection and reveals opendoc is called in the IIS logs. The document loads into memory and seconds later you have the QVS logging VM warnings as a result.
+
+//********************
+//7/24/2012
+//- Added tracing to portions of load script
+//- Added button in Setup tab for Win Server 2008 defaults
+//- Removed QVS Clusternode and OSServer input entries from Setup tab
+//- Identify machine names through file names instead of user entry (for QVS and Windwos event logs only)
+//- Brought in Performance log in Log Analyzer tab
+//- Self-populate the Machine Names now (now more manual entry)
+//- Added new chart, Concurrent Sessions
+//- Removed significant portions of Events, Performance, and Sessions tabs
+//- Modified LogLocations for Server 2008 QVS locations
+//- Moved mindate & maxdate variable declarations from Publisher tab to the Date/Time tab
+//- !!!!!!Changed naming convention of Windows logs (csv files) to include an underscore (_), so be sure to read the new instructions!!!!!!!
+//- Commented out script for second QMS instances (just uncomment if you use it)
+//- Adjusted the IE Plugin maintenance object on the Dashboard tab to work better with QV10-11
+//- Added IIS HTTP Error logging (you will have to enter the log path for each IIS node on the Setup tab)
+//- Removed the slider object on Log Analyzer tab
+//- Minor script changes on IIS scripting tab
+//- Merged bgcolor legend with TypeofLog table on Log Analyzer 
+//- Deleted TypeofLog list box on Log Analyzer
+//- Adjust charts, labels, trendlines, and expressions on Trends/Performance/AccessPoint tab objects (utilized new field, SSessionStart)
+//- See what users have selected in the Audit tab and also the Log Analyzer tab (hover over msg)
+
+//- Minor update on 8/10 to assist with the server name parsing. Edited 1 line each in QVS Events, Performance, Sessions tabs in script
+
+//10/15/2012
+//- Added additional scripting for Scalability Center aggregations
+//- Included new application 'AggregatedAnalytics.qvw' for submission to Scalability Center
+//- Added new table/script tab titled 'QVSRestarts' that will show when QVS restarts in Log Analyzer tab
+//- Removed IISCIP, UserAgent and Method from Log Analyzer table UI to convserve space
+//- Additional documentation provided for new Scalability Center additions
+//- Included version 4.1 int the Deployment Framework developed by Magnus Berg
+//- Minor script adjustment in QVS Events for File field
+//- Adjusted Publisher scripting to accomodate missing execution history files
+//- Added 'Minute' to the multibox in LogAnalzyer tab
+//- Adjusted the Client Build field and Server Build field to better reflect current build
+//- Overhauled the script for Mgmt, DSC, and WebSrvc tabs. Added a switch for system time clocks set to 'yyyy-MM-dd' (e.g. Swed server = 2012-09-10 00:00:00.1497641) 
+//  if you have a system time format that is different, use similar logic and adjust accordingly. 
+///$tab Variables
+// ******************************************************************************************************
+//
+// Application:   			System Monitor 
+// Author:    			 	Michael Terenzi 
+// Portions of the script and many objects previously created by: John O'Brien, Brad Peterman, Matt Crowther
+// 
+// Special thanks to Magnus Berg, Arthur Lee, Jason Long, Larry Carson, Gustav Guldberg, and Johannes Sundin for their expert advice and assistance 
+//
+// Description:   
+//				  See intro tab for description of this application.   This is a free application 
+//			      for QlikView customers to use in helping monitor and trend the activities of 
+//				  QlikView Server and Publisher.  See the Intro and Setup tabs on the interface for
+//				  more information on setting up this application and using it.   
+//
+// ******************************************************************************************************
+
+//SET MonthNames='1;2;3;4;5;6;7;8;9;10;11;12';
+SET MonthNames='Jan;Feb;Mar;Apr;May;Jun;Jul;Aug;Sep;Oct;Nov;Dec';
+SET TimeFormat='hh:mm:ss TT';
+SET DateFormat='MM/DD/YYYY';
+SET HourFormat='hh';
+SET MinuteFormat='mm';
+SET TimestampFormat='MM/DD/YYYY hh:mm:ss[.fff] TT';
+
+
+INPUTFIELD QVSPath;
+INPUTFIELD CName;
+INPUTFIELD WorkOrderPath;
+INPUTFIELD TasklogIndexPath;
+INPUTFIELD TaskResultPath;
+INPUTFIELD ManagementLogPath;
+INPUTFIELD DSCLogPath;
+INPUTFIELD WebServiceLogPath;
+INPUTFIELD SAPConnectorLog;
+INPUTFIELD SAPConnectorLogQVW;
+INPUTFIELD ManagementAuditLogPath;
+INPUTFIELD SalesforceConnectorLog;
+INPUTFIELD IISLogPath;
+INPUTFIELD IISLogPath2;
+INPUTFIELD OSLogPath;
+//Standalone Servers and Cluster Node 1 will always be QVSClusterNode1. Each additional ClusterNode can be assigned a value on the Setup tab
+INPUTFIELD QVSClusterNode1;
+INPUTFIELD QVSClusterNode2;
+INPUTFIELD QVSClusterNode3;
+INPUTFIELD QVSClusterNode4;
+INPUTFIELD QVSClusterNode5;
+//INPUTFIELD ZoomLevel;
+
+//	VARIALBLES <----- uncomment these to return to defaults if you change the inputfield in the table ----
+
+//LET CName= ComputerName();  
+
+
+//LET QVSPath='C:\ProgramData\QlikTech\QlikViewServer'; 
+                                                         //**********   																						    ****************//
+//LET QVSClusterNode1= ComputerName();  				     //**********YOU MUST COMMENT THIS IF YOU WISH TO LINK THE LOGS FROM A DIFFERENT MACHINE THAN THIS APP IS ON****************//	
+														 //**********																								****************//	
+//LET WebSvcNode1= ComputerName();								
+//LET DSCNode1 = ComputerName();								
+//LET MGMTNode1 = ComputerName();								
+//LET IISNode1 = ComputerName(); 
+//Let IISNode2 = '';	
+//LET QVSClusterNode2= '';
+//LET QVSClusterNode3= '';
+//LET QVSClusterNode4= '';
+//LET QVSClusterNode5= '';
+//LET IISLogPath= 'C:\inetpub\logs\LogFiles\W3SVC1';
+//LET IISLogPath2 = '';
+//LET OSLogPath=	'C:\ProgramData\QlikTech\OSLogs';
+//LET WorkOrderPath='C:\ProgramData\QlikTech\DistributionService\Workorder';
+//LET TaskLogIndexPath = 'C:\ProgramData\QlikTech\DistributionService\TaskLogIndex';
+//LET TaskResultPath = 'C:\ProgramData\QlikTech\DistributionService\TaskResults';
+//LET ManagementLogPath = 'C:\ProgramData\QlikTech\ManagementService\Log';
+//LET DSCLogPath = 'C:\ProgramData\QlikTech\DirectoryServiceConnector\Log';
+//LET WebServiceLogPath = 'C:\ProgramData\QlikTech\WebServer\Log';
+//LET SAPConnectorLogQVW = 'C:\ProgramData\QlikTech\Custom Data\QvSAPConnector\SAPConnectorLog\SAPConnectorLog.qvw';
+//LET SAPConnectorLog = 'C:\ProgramData\QlikTech\Custom Data\QvSAPConnector\Log';
+//Let ManagementAuditLogPath = 'C:\ProgramData\QlikTech\ManagementService\AuditLog';
+//Let TaskExecutionHistoryPath = 'C:\ProgramData\QlikTech\DistributionService\TaskExecutionHistory\TaskExecution';
+//LET SalesforceConnectorLogPath = 'C:\ProgramData\QlikTech\Custom Data\SalesForce\Log';
+LET SalesforceConnectorPresence = 0;
+LET SAPConPresence = 0;
+
+
+
+///$tab Thanks
+TRACE ===========Special Thanks to the following people ;
+Trace ===========who have helped make this possible: ;
+TRACE ===========Brad Peterman , John O Brien ;
+TRACE ===========Johannes Sunden, Gustav Guldberg;
+TRACE ===========Arthur Lee, Magnus Berg;
+TRACE ===========Brett Bleess , Matt Crowther; 
+TRACE ===========Karl Humma, Gary Strader;
+TRACE ===========Scalability Center, Lars Skage;
+TRACE ===========and of course,;
+TRACE ===========QlikView Support!;
+SLEEP(4000);
+
+
+///$tab Include DF
+////Script to include Deployment Framework if present
+// Searching for Deployment Framework
+
+// Reseting vG.BasePath variable
+let vG.BasePath=; 
+
+// Basic search for 1.Init.qvs
+$(Include=..\..\..\..\InitLink.qvs);
+$(Include=..\..\..\InitLink.qvs);
+$(Include=..\..\InitLink.qvs);
+$(Include=..\InitLink.qvs);
+$(Include=InitLink.qvs);
+Exit script when '$(vG.BasePath)'= '';
+
+//Advanced search for 1.Init.qvs
+IF '$(vG.BasePath)'= '' then
+            let vL.y = ;
+            for vL.x =1 to 9
+                         let vL.y$(vL.x)='..\';
+                         set vL.Path='$(vL.y1)$(vL.y2)$(vL.y3)$(vL.y4)$(vL.y5)$(vL.y6)$(vL.y7)$(vL.y8)$(vL.y9)';
+                         $(Include=$(vL.Path)InitLink.qvs);
+            exit for when not '$(vG.BasePath)'= ''
+            next
+            Let vL.x = ; 
+            let vL.Path = ;
+            Set vL.y1=;
+			set vL.y2=;
+			set vL.y3=;
+			set vL.y4=;
+			set vL.y5=;
+			set vL.y6=;
+			set vL.y7=;
+			set vL.y8=;
+			set vL.y9=;
+ENDIF 
+
+
+// identifying if DF is used 
+if not '$(vG.BasePath)'= '' then
+// Loading System Variables
+$(Include=$(vG.BaseVariablePath)\3.SystemVariables.qvs);
+
+// Setting Variables so that they match DF Global System Variables
+// Change  DF Global System Variables with DF VariableEditor.qvw
+if not '$(vG.ServerLogPath)' = '' then
+LET QVSPath='$(vG.ServerLogPath)'; 
+endif
+
+if not '$(vG.QVWSServerName1)' = '' then	    																																							
+LET WebSvcNode1= '$(vG.QVWSServerName1)';
+endif
+if not '$(vG.QVWSServerName2)' = '' then
+LET WebSvcNode2= '$(vG.QVWSServerName2)';
+endif
+if not '$(vG.QVWSServerName3)' = '' then
+LET WebSvcNode3= '$(vG.QVWSServerName3)';
+endif
+
+if not '$(vG.QVWSPath1)' = '' then
+LET WebServiceLogPath = '$(vG.QVWSPath1)\Log';
+endif
+
+if not '$(vG.QVWSPath2)' = '' then
+LET WebServiceLogPath2 = '$(vG.QVWSPath2)\Log';
+endif
+if not '$(vG.QVWSPath3)' = '' then
+LET WebServiceLogPath3 = '$(vG.QVWSPath3)\Log';	
+endif
+
+if not '$(vG.QVWSServerName1)' = '' then
+LET IISNode1 = '$(vG.QVWSServerName1)'; 
+endif
+if not '$(vG.QVWSServerName2)' = '' then
+Let IISNode2 = '$(vG.QVWSServerName2)';
+endif
+if not '$(vG.QVWSServerName3)' = '' then	
+Let IISNode2 = '$(vG.QVWSServerName3)';
+endif
+if not '$(vG.IISLogPath1)' = '' then
+LET IISLogPath= '$(vG.IISLogPath1)';
+endif
+if not '$(vG.IISLogPath2)' = '' then
+LET IISLogPath2 = '$(vG.IISLogPath2)';
+endif
+if not '$(vG.IISLogPath3)' = '' then
+LET IISLogPath3 = '$(vG.IISLogPath3)';	
+endif	
+if not '$(vG.DSCServerName1)' = '' then						
+LET DSCNode1 = '$(vG.DSCServerName1)';
+endif
+if not '$(vG.DSCServerName2)' = '' then	
+LET DSCNode2 = '$(vG.DSCServerName2)';
+endif
+if not '$(vG.DSCServerName3)' = '' then
+LET DSCNode3 = '$(vG.DSCServerName3)';
+endif
+if not '$(vG.DSCServerName4)' = '' then
+LET DSCNode4 = '$(vG.DSCServerName4)';
+endif
+if not '$(vG.DSCServerName5)' = '' then
+LET DSCNode5 = '$(vG.DSCServerName5)';
+endif
+if not '$(vG.DSCPath1)' = '' then
+LET DSCLogPath = '$(vG.DSCPath1)\Log';
+endif
+if not '$(vG.DSCPath2)' = '' then
+LET DSCLogPath2 = '$(vG.DSCPath2)\Log';
+endif
+if not '$(vG.DSCPath3)' = '' then
+LET DSCLogPath3 = '$(vG.DSCPath3)\Log';
+endif
+if not '$(vG.DSCPath4)' = '' then
+LET DSCLogPath4 = '$(vG.DSCPath4)\Log';
+endif
+if not '$(vG.DSCPath5)' = '' then
+LET DSCLogPath5 = '$(vG.DSCPath5)\Log';		
+endif
+	
+if not '$(vG.QMSServerName)' = '' then				
+LET MGMTNode1 = '$(vG.QMSServerName)';	
+endif
+
+if not '$(vG.QMSPath)' = '' then	
+LET ManagementLogPath = '$(vG.QMSPath)\Log';					
+Let ManagementAuditLogPath = '$(vG.QMSPath)\AuditLog';
+endif
+
+if not '$(vG.QDSPath1)' = '' then
+Let TaskExecutionHistoryPath = '$(vG.QDSPath1)\TaskExecutionHistory\TaskExecution';
+LET WorkOrderPath='$(vG.QDSPath1)\Workorder';
+LET TaskLogIndexPath = '$(vG.QDSPath1)\TaskLogIndex';
+LET TaskResultPath = '$(vG.QDSPath1)\TaskResults';
+LET QDSNode1 = '$(vG.QDSNode1)';
+LET QDSNode2 = '$(vG.QDSNode2)';
+
+endif
+if not '$(vG.SAPPath)' = '' then
+LET SAPConnectorLogQVW = '$(vG.SAPPath)\SAPConnectorLog\SAPConnectorLog.qvw';
+LET SAPConnectorLog = '$(vG.SAPPath)\Log';
+endif
+
+if not '$(vG.SFPath)' = '' then
+LET SalesforceConnectorLogPath = '$(vG.SFPath)\Log';
+endif
+
+endif 
+
+///$tab Events
+//Load Data from the QVS Events logs 
+//Create a Dummy table in the event there is no Event log data (used later on in the Date/Time tab)
+TRACE ============ Loading Dummy Table for QVS Events logs;
+EDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, EventDummy
+];
+
+Let vEvents = 'EDummy';
+
+
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the vEvents variable
+//EXIT Script;
+TRACE ============ Load QVS Events logs if they exist;
+If FileSize('$(QVSPath)\Events_*.log') > 0 Then
+TRACE ============ Temp table to hold variable values;
+StageTemp:
+Load
+ TextBetween(mid(FileName(),1,index(FileName(),'.')-1)&'_', '_', '_') AS File
+//subfield(FileName(), '_', -2) AS File
+FROM
+$(QVSPath)\Events_*.log;
+
+Stage:
+Load *,
+FieldValueCount('File') AS NodeCount
+Resident StageTemp;
+Let QVSClusterNode1 = FieldValue('File', 1);//PEEK('File',0,'Stage');
+Let QVSClusterNode2 = FieldValue('File', 2);
+Let QVSClusterNode3 = FieldValue('File', 3);
+Let QVSClusterNode4 = FieldValue('File', 4);
+Let QVSClusterNode5 = FieldValue('File', 5);
+Drop Table Stage;
+Drop Table StageTemp;
+
+TRACE ============ QVS Events temp;
+EventsTemp:
+LOAD 
+	 RecNo() as EventNbr,
+	 [Server Started] AS [Server Started Events], 
+     Timestamp, //YYYY-MM-DD
+     Date(Timestamp) &'_'& Time(Timestamp,'hh')&'_'& Time(Timestamp, 'mm') as DateHourKey, //MM/DD/YYYY_HH_MM
+	 Time(Timestamp) as EventsTime,	
+	 Timestamp as EventsTimestamp,
+     SeverityID, 
+     EventID, 
+     Severity, 
+     Message, 
+     TextBetween(mid(FileName(),1,index(FileName(),'.')-1)&'_', '_', '_') as QVSClusterNodeEvents 
+FROM
+$(QVSPath)\Events_*.log  //Changed
+(txt, utf8, embedded labels, delimiter is '\t', msq)
+//Make sure no erroneous events load in
+Where Severity = 'Information' OR Severity ='Warning' OR Severity ='Error' OR Severity ='Notice';
+
+TRACE ============ QVS Events;
+Events:
+Load *,
+	 FieldValueCount('QVSClusterNodeEvents') AS QVSCount
+Resident EventsTemp
+;
+
+//Give the variable a new value, later called in the Date/Time tab
+Let vEvents = 'Events';
+//No need for this table if the IF() condition is met, so let's drop it
+Drop Table EDummy;
+Drop Table EventsTemp;
+ENDIF;
+
+///$tab IIS
+//Load Data from the OS Events logs 
+//Create a Dummy table in the event there is no IIS log data (used later on in the Date/Time tab)
+TRACE ============ IIS Dummy table;
+IISDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, IISDummy
+];
+
+Let vIIS = 'IISDummy';
+
+
+If FileSize('$(IISLogPath)\u_ex*.log') > 0 Then
+TRACE ============ Load IIS logs of first declared server; 
+IISTemp:
+LOAD @1 as date, //YYYY/MM/DD
+     @2 as time,
+     @3 as [s-ip], 
+     @4 as [cs-method], 
+     @5 as [cs-uri-stem], 
+     @6 as [cs-uri-query], 
+     @7 as [s-port], 
+     @8 as [cs-username], 
+     @9 as [c-ip], 
+     @10 as [cs(User-Agent)], 
+     @11 as [sc-status], 
+     @12 as [sc-substatus], 
+     @13 as [sc-win32-status], 
+     @14 as [time-taken],
+ 	 '$(IISNode1)' AS IISNode,
+ 	 Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+ 	 Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS IISTime
+FROM
+$(IISLogPath)\u_ex*.log
+(txt, codepage is 1252, no labels, delimiter is spaces, msq, header is 4 lines, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '#'))
+))
+));
+
+Let vIIS = 'IIS';
+DROP Table IISDummy;
+ENDIF;
+
+//For a second IIS server/loadbalancing
+If FileSize('$(IISLogPath2)\u_ex*.log') > 0 and len('$(IISNode2)') > 0  Then
+TRACE ============ A second IIS server is declared so load;
+Concatenate
+LOAD @1 as date, 
+     @2 as time, 
+	 @3 as [s-ip], 
+     @4 as [cs-method], 
+     @5 as [cs-uri-stem], 
+     @6 as [cs-uri-query], 
+     @7 as [s-port], 
+     @8 as [cs-username], 
+     @9 as [c-ip], 
+     @10 as [cs(User-Agent)], 
+     @11 as [sc-status], 
+     @12 as [sc-substatus], 
+     @13 as [sc-win32-status], 
+     @14 as [time-taken],
+     '$(IISNode2)' AS IISNode,
+     Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+ 	 Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS IISTime
+FROM
+$(IISLogPath2)\u_ex*.log
+(txt, codepage is 1252, no labels, delimiter is spaces, msq, header is 4 lines, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '#'))
+))
+));
+
+
+ENDIF;
+
+//For a third IIS server/loadbalancing
+If FileSize('$(IISLogPath3)\u_ex*.log') > 0 and len('$(IISNode3)') > 0  Then
+TRACE ============ A Third IIS server is declared so load;
+Concatenate
+LOAD @1 as date, 
+     @2 as time, 
+     @3 as [s-ip], 
+     @4 as [cs-method], 
+     @5 as [cs-uri-stem], 
+     @6 as [cs-uri-query], 
+     @7 as [s-port], 
+     @8 as [cs-username], 
+     @9 as [c-ip], 
+     @10 as [cs(User-Agent)], 
+     @11 as [sc-status], 
+     @12 as [sc-substatus], 
+     @13 as [sc-win32-status], 
+     @14 as [time-taken],
+     '$(IISNode3)' AS IISNode,
+     Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+ 	 Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS IISTime
+FROM
+$(IISLogPath3)\u_ex*.log
+(txt, codepage is 1252, no labels, delimiter is spaces, msq, header is 4 lines, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '#'))
+))
+));
+
+
+ENDIF;
+
+If FileSize('$(IISLogPath)\u_ex*.log') > 0 Then
+
+TRACE ============ Load IIS table from temps;
+IIS:
+NoConcatenate LOAD *,
+//Timestamp AS IISTime,
+subfield(Timestamp, '-',-2) & '/' & subfield(SubField(Timestamp, '-', -1), ' ', -2) & '/' & subfield(Timestamp, '-', -3) & '_' & subfield(SubField(Timestamp, ':', -3), ' ', -1) & '_' & SubField(Timestamp, ':', -2) AS DateHourKey
+Resident IISTemp;
+
+Drop Table IISTemp;
+ENDIF;
+
+
+
+///$tab HTTPERR
+//Create a Dummy table in the event there is no IIS log data (used later on in the Date/Time tab)
+TRACE ============ HTTPERR Dummy table;
+HTTPERRDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, HTTPDummy
+];
+
+Let vHTTP = 'HTTPERRDummy';
+
+
+If FileSize('$(HTTPLogPath)\httperr*.log') > 0 Then
+TRACE ============ Load HTTP Error logs; 
+HTTPERRTEMP:
+//date time c-ip c-port s-ip s-port cs-version cs-method cs-uri sc-status s-siteid s-reason s-queuename
+
+LOAD @1 AS HDATE, //YYYY-MM-DD
+     @2 AS HTIME, //HH:MM:SS
+     @3 AS [c-ip], 
+     @4 AS [c-port], 
+     @5 AS [s-ip], 
+     @6 AS [s-port], 
+     @7 AS [cs-version], 
+     @8 AS [cs-method], 
+     @9 AS [cs-uri], 
+     @10 AS [sc-status], 
+     @11 AS [s-siteid], 
+     @12 AS [s-reason], 
+     @13 AS [s-queuename],
+     '$(IISNode1)' AS HTTPNode,
+     Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+ 	 Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS HTTPTime
+FROM
+$(HTTPLogPath)\httperr*.log
+(txt, codepage is 1252, explicit labels, delimiter is ' ', msq, header is 3 lines, filters(
+Remove(Row, RowCnd(CellValue, 1, StrCnd(start, '#')))
+));
+
+Let vHTTP = 'HTTPERR';
+Drop Table HTTPERRDummy;
+ENDIF;
+
+If FileSize('$(HTTPLogPath2)\httperr*.log') > 0 and len('$(IISNode2)') > 0 Then
+TRACE A second HTTP error log is found so load data;
+Concatenate
+LOAD @1 AS HDATE, //YYYY-MM-DD
+     @2 AS HTIME, //HH:MM:SS
+     @3 AS [c-ip], 
+     @4 AS [c-port], 
+     @5 AS [s-ip], 
+     @6 AS [s-port], 
+     @7 AS [cs-version], 
+     @8 AS [cs-method], 
+     @9 AS [cs-uri], 
+     @10 AS [sc-status], 
+     @11 AS [s-siteid], 
+     @12 AS [s-reason], 
+     @13 AS [s-queuename],
+     '$(IISNode2)' AS HTTPNode,
+     Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+ 	 Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS HTTPTime
+FROM
+$(HTTPLogPath2)\httperr*.log
+(txt, codepage is 1252, explicit labels, delimiter is ' ', msq, header is 3 lines, filters(
+Remove(Row, RowCnd(CellValue, 1, StrCnd(start, '#')))
+));
+ENDIF;
+
+If FileSize('$(HTTPLogPath3)\httperr*.log') > 0 and len('$(IISNode3)') > 0 Then
+TRACE A Third HTTP error log is found, so load data;
+Concatenate
+LOAD @1 AS HDATE, //YYYY-MM-DD
+     @2 AS HTIME, //HH:MM:SS
+     @3 AS [c-ip], 
+     @4 AS [c-port], 
+     @5 AS [s-ip], 
+     @6 AS [s-port], 
+     @7 AS [cs-version], 
+     @8 AS [cs-method], 
+     @9 AS [cs-uri], 
+     @10 AS [sc-status], 
+     @11 AS [s-siteid], 
+     @12 AS [s-reason], 
+     @13 AS [s-queuename],
+     '$(IISNode3)' AS HTTPNode,
+     Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+ 	 Timestamp(ConvertToLocalTime(@1 & ' ' & @2), 'YYYY-MM-DD hh:mm:ss') AS HTTPTime
+FROM
+$(HTTPLogPath3)\httperr*.log
+(txt, codepage is 1252, explicit labels, delimiter is ' ', msq, header is 3 lines, filters(
+Remove(Row, RowCnd(CellValue, 1, StrCnd(start, '#')))
+));
+ENDIF;
+
+If FileSize('$(HTTPLogPath)\httperr*.log') > 0 Then
+HTTPERR:
+NoConcatenate LOAD *,
+subfield(Timestamp, '-',-2) & '/' & subfield(SubField(Timestamp, '-', -1), ' ', -2) & '/' & subfield(Timestamp, '-', -3) & '_' & subfield(SubField(Timestamp, ':', -3), ' ', -1) & '_' & SubField(Timestamp, ':', -2) AS DateHourKey
+Resident HTTPERRTEMP;
+
+Drop Table HTTPERRTEMP;
+ENDIF;
+///$tab Performance
+//Create a Dummy table in the event there is no Performance log data (used later on in the Date/Time tab)
+TRACE ============ Load Performance dummy table;
+PDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, PerfDummy
+     
+];
+
+Let vPerf = 'PDummy';
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+If FileSize('$(QVSPath)\Performance_*.log') > 0 Then
+TRACE ============ Load QVS Performance table;
+Performance:
+LOAD 
+	Date(Timestamp) &'_'& Time(Timestamp,'hh')&'_'& Time(Timestamp, 'mm') as DateHourKey, //MM/DD/YYYY_HH_MM
+	Time(Timestamp) as PerformanceTime,	
+	[Exe Type] as ServerExeType,
+	[Exe Version] as ServerExeVersion,
+	[Exe Type], 
+     [Exe Version], 
+     [Server Started], 
+     Timestamp, 
+     Timestamp AS PerformanceTimestamp,
+     EntryType, 
+     ActiveDocSessions, 
+     DocSessions, 
+     ActiveAnonymousDocSessions, 
+     AnonymousDocSessions, 
+     ActiveTunneledDocSessions, 
+     TunneledDocSessions, 
+     DocSessionStarts, 
+     ActiveDocs, 
+     RefDocs, 
+     LoadedDocs, 
+     DocLoads, 
+     DocLoadFails, 
+    Calls as PerformanceCalls,
+	Selections as PerformanceSelections,
+     ActiveIpAddrs, 
+     IpAddrs, 
+     ActiveUsers, 
+     Users, 
+     CPULoad, 
+     [VMCommitted(MB)], 
+     [VMAllocated(MB)], 
+     [VMFree(MB)], 
+     [VMLargestFreeBlock(MB)], 
+     UsageCalBalance, 
+     TextBetween(mid(FileName(),1,index(FileName(),'.')-1)&'_', '_', '_') as QVSClusterNodePerformance
+     FROM
+
+//Insert Performance Log File Name Here  *****************
+$(QVSPath)\Performance_*.log
+(txt, utf8, embedded labels, delimiter is '\t', msq);
+
+//Give the variable a new value, later called in the Date/Time tab
+Let vPerf = 'Performance';
+Drop Table PDummy;
+
+ENDIF;
+///$tab QVS Restarts
+//Load Data from the QVS Events logs 
+//Create a Dummy table in the event there is no Event log data (used later on in the Date/Time tab)
+TRACE ============ Loading Dummy Table for QVS Events logs;
+QVSRDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, QVSRDummy
+];
+
+Let vQVSR = 'QVSRDummy';
+
+TRACE ============ Load QVS Events logs if they exist;
+If FileSize('$(QVSPath)\Events_*.log') > 0 Then
+QVSRestarts:
+Load Distinct
+[Server Started Events],
+[Server Started Events] AS Timestamp,
+Date(Timestamp) &'_'& Time(Timestamp,'hh')&'_'& Time(Timestamp, 'mm') as DateHourKey, //MM/DD/YYYY_HH_MM
+[Server Started Events] AS QVSRestart,
+QVSClusterNodeEvents & ' QVS Restarted' AS Msg,
+'Notice' AS Sev,
+//'QVSEvents' AS MsgSource,
+QVSClusterNodeEvents AS Node
+Resident Events; 
+
+If FileSize('$(QVSPath)\Performance_*.log') > 0 Then
+TRACE ============ Load QVS Performance table;
+Concatenate 
+Load Distinct
+[Server Started],
+[Server Started] AS Timestamp,
+Date(Timestamp) &'_'& Time(Timestamp,'hh')&'_'& Time(Timestamp, 'mm') as DateHourKey, //MM/DD/YYYY_HH_MM
+[Server Started] AS QVSRestart,
+QVSClusterNodePerformance & ' QVS Restarted' AS Msg,
+'Notice' AS Sev,
+//'Performance' AS MsgSource,
+QVSClusterNodePerformance AS Node
+Resident Performance; 
+
+Let vQVSR = 'QVSRestarts';
+//No need for this table if the IF() condition is met, so let's drop it
+Drop Table QVSRDummy;
+ENDIF;
+///$tab Sessions
+//Create a Dummy table in the event there is no Session log data (used later on in the Date/Time tab)
+TRACE Session dummy table;
+SDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, SessionDummy
+     
+];
+Let vSes = 'SDummy';
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+If FileSize('$(QVSPath)\Sessions_*.log') > 0 Then
+TRACE ============Load QVS Sessions table;
+Sessions:
+LOAD 
+	Date(Timestamp) &'_'& Time(Timestamp,'hh')&'_'& Time(Timestamp, 'mm') as DateHourKey,//MM/DD/YYYY_HH_MM
+	Capitalize(LOWER(SubField(Document,'\',-1))) as SessionDocName,
+	Time(Timestamp) as SessionsTime,	
+	Timestamp as SessionsTimestamp,	
+	AutoNumber(Timestamp&Document) as DocUseKey, 
+	//From the QV10 Audit Monitor
+	Capitalize(LOWER(SubField(Document,'\',-1))) &'_'&SubField([Authenticated user],'\',-1) as %DocUserKey,
+	//From the QV9 Server Monitoring app
+	[Exe Type] as SessionExeType,
+	[Exe Version] as SessionExeVersion, //1111.11.1111.1111.11
+	if(len([Authenticated user]) = 0 ,Timestamp&'-'&[Session Start]&'-'&[Authenticated user]&'-'&Lower(Mid(Document,Index(Document,'\',-1)+1)),  //Changed 3/6/2012
+	 Timestamp&'-'&[Session Start]&'-'&[QlikView User]&'-'&Lower(Mid(Document,Index(Document,'\',-1)+1)) ) as SessionID,
+	if(len([QlikView User]) = 0 ,[Authenticated user],[QlikView User]) as UserID,
+	Lower(Document) as DocumentPath,
+	Lower(Mid(Document,Index(Document,'\',-1)+1)) as DocumentName, 
+     [Server Started] AS [Server Started Sessions], 
+     Timestamp, 
+     Document, 
+     [Document Timestamp], 
+     [QlikView User], 
+     [Exit Reason], 
+     [Session Start], 
+     [Session Start] AS SSessionStart,
+     [Session Duration], 
+     Time([Session Start] + [Session Duration]) AS [Session End],
+      [Session Start] 	 as SessionStart, 
+     [Session Duration]  as SessionDuration, 
+     Date([Session Start] + [Session Duration], 'YYYY-MM-DD hh:mm:ss') as SessionEnd,
+     [Session Start] &'-'& ([Session Start] + [Session Duration]) As SessionRange,
+     [CPU spent (s)], 
+     [Bytes Received], 
+     [Bytes Sent],
+     //Calls, 
+     Calls as SessionCalls,
+	Selections as SessionSelections,
+	[Authenticated user] as AuthenticatedUser,
+     [Identifying user], 
+     [Client machine identification], 
+     [Serial number], 
+     [Client Type],
+     //*****List Browser/Client types here*****
+      IF([Client Type] like '*MSIE*', 'Internet Explorer', 
+     	IF([Client Type] like '*gecko*', 'Firefox',
+     		If([Client Type] like '*chrome*', 'Chrome',
+     			If([Client Type] like 'Windows Exe', 'IE Plugin',
+     				If([Client Type] like '*android*', 'Android',
+     					If([Client Type] like '*safari.mobile*', 'Mobile Safari',
+     						If([Client Type] like '*browser.safari*', 'Safari',
+     							If([Client Type] like '*opera*', 'Opera',
+     								If([Client Type] like '*mobile.iphone*', 'Native iPhone', 'Other')
+     									)))))))) As [Client Type2],
+     									
+     If( SubField([Client Build Version], '.', -1) > 0,  SubField([Client Build Version], '.', -1)) AS 'Client Build Version',
+     //IF(Mid([Exe Version], 2,1) = '.', Mid([Exe Version], 6,4),
+     SubField([Exe Version],'.', -3) AS BuildVersion,
+     	//Mid([Exe Version], 7,4)) AS BuildVersion, // 10.00.8811.1111.11
+     [Secure Protocol], 
+     [Tunnel Protocol], 
+     [Server Port], 
+     [Client Address], 
+     [Client Port], 
+    //From the QV9 Server Monitoring app
+    Lower(Mid(Document,Index(Document,'\',-1)+1)) & '_' & Subfield([Authenticated user], '\', 2) as "DocUser_Key",
+	UPPER(Subfield([Authenticated user], '\', 2)) as LanID,
+	Autonumber(Subfield([Authenticated user], '\', 2)) as UserCountField,
+     [Cal Type], 
+     [Cal Usage Count],
+     TextBetween(mid(FileName(),1,index(FileName(),'.')-1)&'_', '_', '_') as QVSClusterNodeSession
+     FROM $(QVSPath)\Sessions_*.log
+(txt, utf8, embedded labels, delimiter is '\t', msq);
+//Give the variable a new value, later called in the Date/Time tab
+Let vSes = 'Sessions';
+Drop Table SDummy;
+ENDIF;
+
+///$tab AuditLog
+// ----------------------------------------
+// Audit Log from the new v10 QVS feature
+// ----------------------------------------
+TRACE ============ Load Audit dummy table;
+ADummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, AuditDummy
+     
+];
+Let vAudit = 'ADummy';
+
+
+//Must have QVSClusterNode1 Session Log and Audit Log Present ................this feature will not break down across clustered servers yet.
+If FileSize('$(QVSPath)\Audit_*.log') > 0 AND FileSize('$(QVSPath)\Sessions_*.log') > 0 Then
+TRACE ============ Load QVS Audit log data;
+AuditLog:
+LOAD 
+	  @5 AS AuthenticatedUser,
+     //SubField(User,'\',-1) as AuthenticatedUser,
+	 @1 AS AuditServerStarted, 
+     @2 As ActionTimestamp, 
+      Date(@2) &'_'& Time(@2,'hh')&'_'& Time(@2, 'mm') as DateHourKey,//MM/DD/YYYY_HH_MM
+     @2 AS Timestamp, 
+     Capitalize(SubField(@3,'\',-1)) as SessionDocName,
+     Left(@3, Index(@3, '\', -1)-1) as DocFolder, 
+     @3 as DocFullPath,
+     @4 AS Type, 
+     @6 AS AuditMessage,
+     IF(Index(@6,'\')>0, SubField(@6,'\',1), 'Selection') as Action,
+     IF(Index(@6,'Activated sheet Document')>0, SubField(@6,'\',2)) as SheetID,
+     SubField(@6,'\',-1) as Object,
+     @7 AS SelValues
+    
+//******Insert Audit Log File Name here******
+FROM $(QVSPath)\Audit_*.log (txt, utf8, explicit labels, delimiter is '\t', msq, header is 1 lines);
+
+Inner Join
+IntervalMatch (Timestamp)//, %DocUserKey) 
+Load [Session Start],// as SessionStart,
+	  Date([Session Start] + [Session Duration], 'YYYY-MM-DD hh:mm:ss') as [Session End]//2//,
+	 
+//******Insert Sessions Log File Name here******
+Resident Sessions; 
+
+//FROM $(QVSPath)\Sessions_*.log (txt, utf8, embedded labels, delimiter is '\t', msq);
+
+Let vAudit = 'AuditLog';
+Drop Table ADummy;
+ENDIF;
+
+
+
+
+///$tab SAPConnector
+//Create a Dummy table in the event there is no SAP Connector log data (used later on in the Date/Time tab)SAPDummy:
+TRACE ============ Load SAP dummy table;
+SAPDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, SAPDummy
+     
+];
+
+Let vSAP = 'SAPDummy';
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+If FileSize('$(SAPConnectorLog)\QvSAP*.txt') > 0 Then
+TRACE ============ Load SAP log data;
+SAPConnector:
+LOAD @1 as Timestamp, 
+	 @1 as SAPTimestamp,
+	 Date(@1) &'_'& Hour(@1)&'_'& Minute(@1) as DateHourKey,
+     @2 as ConnectStatus, 
+     @3 as ConnectMsg
+FROM
+$(SAPConnectorLog)\QvSAP*.txt
+(txt, codepage is 1252, no labels, delimiter is '\t', msq)
+Where len(@2) > 0;
+//Set the variable for conditional shows
+LET SAPConPresence = 1;
+//Give the variable a new value, later called in the Date/Time tab
+LET vSAP = 'SAPConnector';
+Drop Table SAPDummy;
+ENDIF;
+
+
+///$tab SalesForce
+TRACE ============ Load Salesforce dummy table;
+SalesforceDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, SalesforceDummy    
+];
+
+Let vSalesforce = 'SalesforceDummy';
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+If FileSize('$(SalesforceConnectorLogPath)\QvSalesForceConnector*.txt') > 0 Then
+TRACE ============ Load Salesforce log data;
+SalesforceConnector:
+LOAD @1 AS Timestamp, 
+	 @1 AS SalesforceTimestamp,
+	 Date(@1) &'_'& Hour(@1)&'_'& Minute(@1) as DateHourKey,
+     @2 AS SFConnectStatus, 
+     @3 AS SFConnectMessage
+FROM
+$(SalesforceConnectorLogPath)\QvSalesForceConnector*.txt
+(txt, codepage is 1252, no labels, delimiter is '\t', msq)
+Where len(@2) > 0;;
+Let vSalesforce = 'SalesforceConnector';
+Let SalesforceConnectorPresence = 1; 
+Drop Table SalesforceDummy;
+ENDIF;
+///$tab WebSrvc New
+//Create a Dummy table in the event there is no Web Service log data (used later on in the Date/Time tab)
+TRACE ============ Load Web svc dummy;
+WebDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, WEBDummy
+     
+];
+Let vWebSvc = 'WebDummy';
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+If FileSize('$(WebServiceLogPath)\*.txt') > 0 Then
+TRACE ============ Load Webservice log data;
+Let GetRegQVWS = GetRegistryString('HKEY_CURRENT_USER\Control Panel\International', 'sShortDate');
+WebService:
+LOAD 
+	@1 AS @1b,
+//5/2/2011 00:00:02.7860835
+If('$(GetRegQVWS)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS WSDate,
+					
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS WSDay,	
+			
+If('$(GetRegQVWS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS WSYear,
+					
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS WSMonth,
+					
+Right(SubField(@1, ':', -3),2) AS WSHour, // 11/11/1111 11:11:11
+SubField(@1, ':', -2) AS WSMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS WSSecond,  // 11/11/1111 11:11:11
+     
+@2 AS WSLogType, 
+@3 AS WSText,
+     
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegQVWS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey,
+			
+If('$(GetRegQVWS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS WSTime,
+If('$(GetRegQVWS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp,
+			'$(WebSvcNode1)' AS WebSvcNode
+FROM
+$(WebServiceLogPath)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));
+
+//Give the variable a new value, later called in the Date/Time tab
+Let vWebSvc = 'WebService';
+Drop Table WebDummy;
+ENDIF;
+
+//If using a second webserver/loadbalancing
+If FileSize('$(WebServiceLogPath2)\*.txt') > 0 AND Len('$(WebSvcNode2)') > 0  Then
+TRACE ============ Load Webservice log data from second websever if declared;
+Concatenate
+LOAD 
+	@1 AS @1b,
+//5/2/2011 00:00:02.7860835
+If('$(GetRegQVWS)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS WSDate,
+					
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS WSDay,	
+			
+If('$(GetRegQVWS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS WSYear,
+					
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS WSMonth,
+					
+Right(SubField(@1, ':', -3),2) AS WSHour, // 11/11/1111 11:11:11
+SubField(@1, ':', -2) AS WSMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS WSSecond,  // 11/11/1111 11:11:11
+     
+@2 AS WSLogType, 
+@3 AS WSText,
+     
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegQVWS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey,
+			
+If('$(GetRegQVWS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS WSTime,
+If('$(GetRegQVWS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp,
+			'$(WebSvcNode2)' AS WebSvcNode
+FROM
+$(WebServiceLogPath2)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));;
+ENDIF;
+
+
+
+//If using a third webserver/loadbalancing
+If FileSize('$(WebServiceLogPath3)\*.txt') > 0 AND Len('$(WebSvcNode3)') > 0 AND Len('$(WebSvcNode1)') > 0 Then
+TRACE ============ Load webservice log from third webserver if declared;
+Concatenate
+LOAD 
+	@1 AS @1b,
+//5/2/2011 00:00:02.7860835
+If('$(GetRegQVWS)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS WSDate,
+					
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS WSDay,	
+			
+If('$(GetRegQVWS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS WSYear,
+					
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS WSMonth,
+					
+Right(SubField(@1, ':', -3),2) AS WSHour, // 11/11/1111 11:11:11
+SubField(@1, ':', -2) AS WSMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS WSSecond,  // 11/11/1111 11:11:11
+     
+@2 AS WSLogType, 
+@3 AS WSText,
+     
+If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegQVWS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegQVWS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey,
+			
+If('$(GetRegQVWS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS WSTime,
+If('$(GetRegQVWS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp,
+			'$(WebSvcNode3)' AS WebSvcNode
+FROM
+$(WebServiceLogPath3)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));;
+ENDIF;
+///$tab Mgmt New
+//Create a Dummy table in the event there is no Management log data (used later on in the Date/Time tab)
+TRACE ============ Load QMS dummy table;
+MGMTDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, MGMTDummy
+     
+];
+Let vMGMT = 'MGMTDummy';
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+//Create a temp table to be dropped later
+If FileSize('$(ManagementLogPath)\*.txt') > 0 Then
+TRACE ============ Load QMS log data;
+Let GetRegQMS = GetRegistryString('HKEY_CURRENT_USER\Control Panel\International', 'sShortDate');
+MGMT:
+LOAD @1, //Swed server = 2012-09-10 00:00:00.1497641 ................US and default is 8/20/2012 07:26:15.2187570
+//12/4/2011
+If('$(GetRegQMS)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS MGMTDate,
+		
+If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS MGMTDay,	
+			
+If('$(GetRegQMS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS MGMTYear,
+	
+If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS MGMTMonth,
+Right(SubField(@1, ':', -3),2) AS MGMTHour, // 11/11/1111 11:11:11
+SubField(@1, ':', -2) 		   AS MGMTMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS MGMTSecond,  // 11/11/1111 11:11:11
+			
+If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegQMS)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegQMS)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2)
+											 AS DateHourKey,	////MM/DD/YYYY_HH_MM
+			
+If('$(GetRegQMS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS MgmtTimestamp, //US and default is 8/20/2012 07:26:15.2187570
+			
+If('$(GetRegQMS)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp,
+     @2 AS ErrorType, 
+     @3 AS MCMessage,
+     '$(MGMTNode1)' AS MGMTNode
+FROM
+$(ManagementLogPath)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));
+
+
+//Give the variable a new value, later called in the Date/Time tab
+Let vMGMT = 'MGMT';
+Drop Table MGMTDummy;
+ENDIF;
+
+
+//EXIT Script;
+///$tab QV11 Mgmt Audit
+//Create a Dummy table in the event there is no Management Audit log data (used later on in the Date/Time tab)
+TRACE ============ Create QMS Audit dummy table;
+MGMTAuditDummy:
+	LOAD * INLINE [
+     Timestamp, DateHourKey, MGMTAuditDummy
+     
+];
+Let vMGMTAudit = 'MGMTAuditDummy';
+
+
+///////////////////
+//QV11
+
+If FileSize('$(ManagementAuditLogPath)\QlikViewServerResource\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then  
+TRACE ============ Create QMS Audit table from logs;
+
+MGMTAudit:
+LOAD TransactionID, 
+	 'QlikViewServerResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     IsOEMLicensed, 
+     Name AS MgmtAuditName, 
+     ShowAlerts, 
+     QVSUsername, 
+     IsCluster, 
+     QDSID, 
+     QVSPassword
+FROM
+$(ManagementAuditLogPath)\QlikViewServerResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ 
+
+
+
+
+If FileSize('$(ManagementAuditLogPath)Category\*.txt') > 0 Then
+Outer Join
+LOAD TransactionID, 
+	 'Category' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+     ID AS MGMTAuditID, 
+     Name AS MgmtAuditName
+FROM
+$(ManagementAuditLogPath)\Category\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+If FileSize('$(ManagementAuditLogPath)ApplicationSetting\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'ApplicationSetting' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     EmailFormat, 
+     EmailPassword, 
+     EmailUserID, 
+     EmailOverride, 
+     QMSID, 
+     EmailTimeout, 
+     EmailFromAddress, 
+     XmlBackupSchedule, 
+     XmlBackupTime, 
+     LogLevel, 
+     KeepHistoryForDays, 
+     XmlBackupInterval, 
+     EmailPort, 
+     EmailAuthenticationMethod, 
+     XmlBackupPath, 
+     EmailServerAddress
+FROM
+$(ManagementAuditLogPath)\ApplicationSetting\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+/////
+
+If FileSize('$(ManagementAuditLogPath)DBCommandTask\*.txt') > 0 Then
+
+
+
+Outer Join
+LOAD TransactionID, 
+	 'DBCommandTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+     ID AS MGMTAuditID, 
+     NumberOfAttempts, 
+     VersionID, 
+     ConnectionString, 
+     Name AS MgmtAuditName, 
+     DBCommandLine, 
+     Enabled, 
+     DistributionServiceID, 
+     Description
+FROM
+$(ManagementAuditLogPath)\DBCommandTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)DirectoryResource\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DirectoryResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DSCID, 
+     DSSettings, 
+     ServerAddress, 
+     DSUsername, 
+     DSProviderType, 
+     DSPassword, 
+     ErrStatus, 
+     FullName
+FROM
+$(ManagementAuditLogPath)\DirectoryResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)DistributionDetail\*.txt') > 0 Then
+
+Outer Join
+
+LOAD TransactionID, 
+	 'DistributionDetail' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     QvsResourceID, 
+     SubPath, 
+     DocumentTaskID, 
+     ValidateEmails, 
+     FSPath, 
+     RecipientType, 
+     RecipientName, 
+     IsDynamicDistribution, 
+     DistributionType, 
+     DDDValueType, 
+     DDDField
+FROM
+$(ManagementAuditLogPath)\DistributionDetail\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+//QV11
+If FileSize('$(ManagementAuditLogPath)DistributionService\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DistributionService' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Password, 
+     Username, 
+     ApplicationDataFolder, 
+     DisableTaskTriggersForDocAdmins, 
+     XSWebAdress, 
+     ClusterName, 
+     ShowAlerts, 
+     CPUPriority, 
+     IsPublisher, 
+     MaxSimultaneousQvb, 
+     DSCID, 
+     LogLevel, 
+     MaxSimultaneousReaderQVBs, 
+     SectionAccessPassword, 
+     CPUAffinity, 
+     IsCluster, 
+     SectionAccessUserName
+FROM
+$(ManagementAuditLogPath)\DistributionService\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+If FileSize('$(ManagementAuditLogPath)DocumentLoad\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DocumentLoad' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DocumentTaskID, 
+     ServerMode, 
+     QlikViewServerID, 
+     ClusterNodeID, 
+     Mode
+FROM
+$(ManagementAuditLogPath)\DocumentLoad\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF; 
+
+
+If FileSize('$(ManagementAuditLogPath)DocumentTask\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DocumentTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     AjaxUrl, 
+     TimeoutMinutes, 
+     NumberOfAttempts, 
+     ScriptParameterValueField, 
+     ScriptParameterName, 
+     ReloadOption, 
+     DocumentTimeout, 
+     Distribute, 
+     TaskTrack, 
+     DistributionServiceID, 
+     ScriptParameterValueFilename, 
+     ExportUsers, 
+     ExportAccess, 
+     VersionID, 
+     Name, 
+     EnableSessionCollaboration, 
+     CreationMode, 
+     NameTemplate, 
+     CreatorUserNames, 
+     DownloadUsers, 
+     DownloadAccess, 
+     SessionTimeout, 
+     AllowPDFGeneration, 
+     AllowAjaxOnSmallDevicesClient, 
+     SendNotificationEmail, 
+     PDFReportName, 
+     PDFReportID, 
+     AllowZeroFootprintClient, 
+     Description, 
+     Enabled, 
+     NameIsAutoGenerated, 
+     AllowMobileClient, 
+     AllowPluginClient, 
+     AlwaysOpenable, 
+     SectionAccessUserName, 
+     SetScript, 
+     SectionAccessPassword, 
+     MaxOpenSessions, 
+     OverrideXSSectionAccess, 
+     EnableAuditLogging, 
+     ClearLocks, 
+     SourceDocumentID, 
+     ClearAll, 
+     ReapplySelections, 
+     ClearAlwaysOneSelected
+FROM
+$(ManagementAuditLogPath)\DocumentTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF; 
+
+
+If FileSize('$(ManagementAuditLogPath)DSCResource\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DSCResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     ClusterName, 
+     DscAddress, 
+     ShowAlerts, 
+     CustomDirectoryPort, 
+     LogLevel, 
+     Password, 
+     Username
+FROM
+$(ManagementAuditLogPath)\DSCResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)ExternalProgramTask\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'ExternalProgramTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     VersionID, 
+     IgnoreErrors, 
+     CommandLine, 
+     Enabled, 
+     Name, 
+     Description, 
+     NumberOfAttempts, 
+     DistributionServiceID
+FROM
+$(ManagementAuditLogPath)\ExternalProgramTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+If FileSize('$(ManagementAuditLogPath)MailTemplate\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'MailTemplate' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime,
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DistributionServiceID, 
+     Body, 
+     TemplateType, 
+     IsHTML, 
+     Subject
+FROM
+$(ManagementAuditLogPath)\MailTemplate\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(CellValue, 1, StrCnd(contain, '%')))
+));
+ENDIF;
+
+//QV11
+If FileSize('$(ManagementAuditLogPath)MessageQueue\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'MessageQueue' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     ExecutionServiceID, 
+     MessageType, 
+     MessageParameter
+FROM
+$(ManagementAuditLogPath)\MessageQueue\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+If FileSize('$(ManagementAuditLogPath)PauseTask\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'PauseTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     NumberOfAttempts, 
+     VersionID, 
+     DelaySeconds, 
+     DistributionServiceID, 
+     PauseTaskType, 
+     DelayUntil, 
+     Name, 
+     Description, 
+     Enabled
+FROM
+$(ManagementAuditLogPath)\PauseTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+//QV11
+If FileSize('$(ManagementAuditLogPath)QDSCluster\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then
+
+Outer Join
+LOAD TransactionID,
+	 'QDSCluster' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DistributionServiceID, 
+     QDSWebAdress, 
+     CurrentWorkorderID, 
+     CurrentConfigurationID
+FROM
+$(ManagementAuditLogPath)\QDSCluster\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+If FileSize('$(ManagementAuditLogPath)QvdCreationTask\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'QvdCreationTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Script, 
+     SubPath, 
+     Name, 
+     VersionID, 
+     DistributionServiceID, 
+     Description, 
+     Enabled, 
+     SourceDocumentFolderId, 
+     QvdTableName, 
+     NumberOfAttempts
+FROM
+$(ManagementAuditLogPath)\QvdCreationTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+//QV11
+If FileSize('$(ManagementAuditLogPath)QVSCluster\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then
+
+Outer Join
+
+LOAD TransactionID, 
+	 'QVSCluster' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     QlikviewServerID, 
+     QVSAdress, 
+     ExternalName, 
+     QvsInternalID
+FROM
+$(ManagementAuditLogPath)\QVSCluster\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+If FileSize('$(ManagementAuditLogPath)qvsSettings\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionId AS TransactionID, 
+	 'QVSSettings' AS AuditLogType,
+    UserId AS ModifiedByUser, 
+     Timestamp, 
+     Timestamp AS ModifiedTime,
+ //    ModifiedTime AS Timestamp,
+     Date(Timestamp) &'_'& Hour(Timestamp)&'_'& Minute(Timestamp) as DateHourKey,
+     Key, 
+     Value
+FROM
+$(ManagementAuditLogPath)\qvsSettings\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+//QV11
+If FileSize('$(ManagementAuditLogPath)QvWebServiceResource\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'QvWebServiceResrouce' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     ServerAddress, 
+     ShowAlerts, 
+     ServerName, 
+     Username, 
+     Password
+FROM
+$(ManagementAuditLogPath)\QvWebServiceResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+
+If FileSize('$(ManagementAuditLogPath)qvwSettings\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionId, 
+	 'QVWSettings' AS AuditLogType,
+    UserId AS ModifiedByUser, 
+     Timestamp, 
+     Date(Timestamp) &'_'& Hour(Timestamp)&'_'& Minute(Timestamp) as DateHourKey,
+     Key, 
+     Value
+FROM
+$(ManagementAuditLogPath)\qvwSettings\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF; 
+
+
+
+If FileSize('$(ManagementAuditLogPath)SourceDocument\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID,
+	 'SourceDocument' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Path, 
+     FolderID, 
+     DistributionServiceID
+FROM
+$(ManagementAuditLogPath)\SourceDocument\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+//QV11
+If FileSize('$(ManagementAuditLogPath)SourceDocumentFolderResource\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'SourceDocumentFolderResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Path, 
+     SendAlertEmailForDocumentAdministrators, 
+     FolderType, 
+     DistributionServiceID, 
+     QlikViewServerID
+FROM
+$(ManagementAuditLogPath)\SourceDocumentFolderResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF; 
+
+
+
+If FileSize('$(ManagementAuditLogPath)TaskDependency\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'TaskDependency' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     TaskID, 
+     TaskType, 
+     DependentTaskID, 
+     DependentTaskType
+FROM
+$(ManagementAuditLogPath)\TaskDependency\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+
+If FileSize('$(ManagementAuditLogPath)TaskCategory\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'TaskCategory' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     TaskID, 
+     CategoryID
+FROM
+$(ManagementAuditLogPath)\TaskCategory\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+If FileSize('$(ManagementAuditLogPath)Trigger\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID,
+	 'Trigger' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DayNumbers, 
+     Months, 
+     TimeContraintFrom, 
+     TimeContraintTo, 
+     MainTriggerID, 
+     TaskID, 
+     Occourence, 
+     AndTimeConstraintMinutes, 
+     ExpireAt, 
+     RunTaskID, 
+     EnableAt, 
+     Enabled, 
+     TriggerType, 
+     Days, 
+     EDXPassword, 
+     StartAt, 
+     MaxCount, 
+     Count
+FROM
+$(ManagementAuditLogPath)\Trigger\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+//QV11
+If FileSize('$(ManagementAuditLogPath)Workorderversion\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 11 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'WorkOrderVersion' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     CurrentWorkorderID, 
+     CurrentConfigurationID
+FROM
+$(ManagementAuditLogPath)\Workorderversion\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+Let vMGMTAudit = 'MGMTAudit';
+Drop Table MGMTAuditDummy;
+
+ENDIF;
+///$tab QV10 Mgmt Audit
+///////////////////
+//QV10
+If FileSize('$(ManagementAuditLogPath)\QlikViewServerResource\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then 
+TRACE ============ Create table from QMS Audit log data; 
+Errormode=0;
+MGMTAudit:
+
+LOAD TransactionID, 
+	 'QlikViewServerResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     //IsOEMLicensed, 
+     Name AS MgmtAuditName, 
+     //ShowAlerts, 
+     QVSUsername, 
+     IsCluster, 
+     QDSID, 
+     QVSPassword
+FROM
+$(ManagementAuditLogPath)\QlikViewServerResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+
+
+If FileSize('$(ManagementAuditLogPath)\Category\*.txt') > 0 Then
+Outer Join
+LOAD TransactionID, //AS CatTransID, 
+	 'Category' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+     ID AS MGMTAuditID, 
+     Name AS MgmtAuditName
+FROM
+$(ManagementAuditLogPath)\Category\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+If FileSize('$(ManagementAuditLogPath)\ApplicationSetting\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'ApplicationSetting' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     EmailFormat, 
+     EmailPassword, 
+     EmailUserID, 
+     EmailOverride, 
+     QMSID, 
+     EmailTimeout, 
+     EmailFromAddress, 
+     XmlBackupSchedule, 
+     XmlBackupTime, 
+     LogLevel, 
+     KeepHistoryForDays, 
+     XmlBackupInterval, 
+     EmailPort, 
+     EmailAuthenticationMethod, 
+     XmlBackupPath, 
+     EmailServerAddress
+FROM
+$(ManagementAuditLogPath)\ApplicationSetting\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+/////
+
+If FileSize('$(ManagementAuditLogPath)\DBCommandTask\*.txt') > 0 Then
+
+
+
+Outer Join
+LOAD TransactionID, // AS CmdTskTransID, 
+	 'DBCommandTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+     ID AS MGMTAuditID, 
+     NumberOfAttempts, 
+     VersionID, 
+     ConnectionString, 
+     Name AS MgmtAuditName, 
+     DBCommandLine, 
+     Enabled, 
+     DistributionServiceID, 
+     Description
+FROM
+$(ManagementAuditLogPath)\DBCommandTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\DirectoryResource\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DirectoryResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DSCID, 
+     DSSettings, 
+     ServerAddress, 
+     DSUsername, 
+     DSProviderType, 
+     DSPassword, 
+     ErrStatus, 
+     FullName
+FROM
+$(ManagementAuditLogPath)\DirectoryResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\DistributionDetail\*.txt') > 0 Then
+
+Outer Join
+
+LOAD TransactionID, 
+	 'DistributionDetail' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     QvsResourceID, 
+     SubPath, 
+     DocumentTaskID, 
+     ValidateEmails, 
+     FSPath, 
+     RecipientType, 
+     RecipientName, 
+     IsDynamicDistribution, 
+     DistributionType, 
+     DDDValueType, 
+     DDDField
+FROM
+$(ManagementAuditLogPath)\DistributionDetail\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+//QV10
+If FileSize('$(ManagementAuditLogPath)\DistributionService\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DistributionService' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Password, 
+     Username, 
+     ApplicationDataFolder, 
+     DisableTaskTriggersForDocAdmins, 
+     XSWebAdress, 
+     //ClusterName, 
+     //ShowAlerts, 
+     CPUPriority AS CpuPriority, 
+     IsPublisher, 
+     MaxSimultaneousQvb AS MaxSimultaneourQVB, 
+     DSCID, 
+     LogLevel AS LoggingLevel, 
+     MaxSimultaneousReaderQVBs AS MaxSimultaneoiusReaderQvbs, 
+     SectionAccessPassword, 
+     CPUAffinity AS CpuAffinity, 
+     IsCluster, 
+     SectionAccessUserName
+FROM
+$(ManagementAuditLogPath)\DistributionService\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\DocumentLoad\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DocumentLoad' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DocumentTaskID, 
+     ServerMode, 
+     QlikViewServerID, 
+     ClusterNodeID, 
+     Mode
+FROM
+$(ManagementAuditLogPath)\DocumentLoad\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF; 
+
+
+If FileSize('$(ManagementAuditLogPath)\DocumentTask\*.txt') > 0 Then
+
+
+Outer Join
+LOAD TransactionID, 
+	 'DocumentTask' AS AuditLogType,
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ID AS MGMTAuditID, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedByUser, 
+     ID, 
+     Distribute, 
+     ReloadOption, 
+     TaskTrack, 
+     DistributionServiceID, 
+     AutoLoadDayOfWeek, 
+     AutoLoadMode, 
+     MaxOpenSessions AS MgmtMaxOpenSessions, 
+     AutoLoadToTime, 
+     AutoLoadFromTime, 
+     TimeoutMinutes, 
+     CreationMode, 
+     NameTemplate AS MgmtNameTemplate, 
+    Name AS MgmtAuditName, 
+     CreatorUserNames, 
+     ScriptParameterValueFilename, 
+     NumberOfAttempts AS MgmtNumberofAttempts, 
+     AjaxUrl, 
+     ScriptParameterValueField, 
+     ScriptParameterName, 
+     AllowZeroFootprintClient, 
+     AllowDownloadClient AS MgmtAllowDownloadClient, 
+     AllowPDFGeneration As MgmtAllowPDFGeneration, 
+     PDFReportID, 
+     SendNotificationEmail AS MgmtSendNotificationEmail, 
+     Description, 
+     Enabled AS MgmtEnabled, 
+     NameIsAutoGenerated, 
+     AllowMobileClient AS MgmtAllowMobile, 
+     AllowPluginClient AS MgmtAllowPlugin, 
+     PDFReportName, 
+     SetScript AS MgmtSetScript, 
+     ReapplySelections AS MgmtReapplySelections, 
+     SectionAccessUserName, 
+     OverrideXSSectionAccess, 
+     SectionAccessPassword, 
+     SourceDocumentID, 
+     AlwaysOpenable AS MgmtAlwaysOpenable, 
+     ClearLocks AS MgmtClearLocks, 
+     ClearAlwaysOneSelected AS MgmtClearAlwaysOneSelected, 
+     ClearAll AS MgmtClearAll
+FROM
+$(ManagementAuditLogPath)\DocumentTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+
+
+ENDIF;
+
+
+If FileSize('$(ManagementAuditLogPath)\DSCResource\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'DSCResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     //ClusterName, 
+     DscAddress, 
+     ShowAlerts, 
+     CustomDirectoryPort, 
+     LogLevel, 
+     Password, 
+     Username
+FROM
+$(ManagementAuditLogPath)\DSCResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\ExternalProgramTask\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'ExternalProgramTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     VersionID, 
+     IgnoreErrors, 
+     CommandLine, 
+     Enabled, 
+    Name AS MgmtAuditName, 
+     Description, 
+     NumberOfAttempts, 
+     DistributionServiceID
+FROM
+$(ManagementAuditLogPath)\ExternalProgramTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+If FileSize('$(ManagementAuditLogPath)\MailTemplate\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'MailTemplate' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime,
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DistributionServiceID, 
+     Body, 
+     TemplateType, 
+     IsHTML, 
+     Subject
+FROM
+$(ManagementAuditLogPath)\MailTemplate\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(CellValue, 1, StrCnd(contain, '%')))
+));
+ENDIF;
+
+
+
+//QV10
+If FileSize('$(ManagementAuditLogPath)\MessageQueue\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'MessageQueue' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     ExecutionServiceID, 
+     MessageType//, 
+     //MessageParameter
+FROM
+$(ManagementAuditLogPath)\MessageQueue\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\PauseTask\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'PauseTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     NumberOfAttempts, 
+     VersionID, 
+     DelaySeconds, 
+     DistributionServiceID, 
+     PauseTaskType, 
+     DelayUntil, 
+    Name AS MgmtAuditName, 
+     Description, 
+     Enabled
+FROM
+$(ManagementAuditLogPath)\PauseTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+//QV10
+If FileSize('$(ManagementAuditLogPath)\QDSCluster\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then
+
+Outer Join
+LOAD TransactionID,
+	 'QDSCluster' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DistributionServiceID, 
+     QDSWebAdress, 
+     CurrentWorkorderID//, 
+     //CurrentConfigurationID
+FROM
+$(ManagementAuditLogPath)\QDSCluster\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\QvdCreationTask\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'QvdCreationTask' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Script, 
+     SubPath, 
+    Name AS MgmtAuditName, 
+     VersionID, 
+     DistributionServiceID, 
+     Description, 
+     Enabled, 
+     SourceDocumentFolderId, 
+     QvdTableName, 
+     NumberOfAttempts
+FROM
+$(ManagementAuditLogPath)\QvdCreationTask\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+//QV10
+If FileSize('$(ManagementAuditLogPath)\QVSCluster\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then
+
+Outer Join
+
+LOAD TransactionID, 
+	 'QVSCluster' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     QlikviewServerID, 
+     QVSAdress, 
+     ExternalName//, 
+     //QvsInternalID
+FROM
+$(ManagementAuditLogPath)\QVSCluster\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\qvsSettings\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionId AS TransactionID, 
+	 'QVSSettings' AS AuditLogType,
+    UserId AS ModifiedByUser, 
+     Timestamp, 
+     Timestamp AS ModifiedTime,
+ //    ModifiedTime AS Timestamp,
+     Date(Timestamp) &'_'& Hour(Timestamp)&'_'& Minute(Timestamp) as DateHourKey,
+     Key, 
+     Value
+FROM
+$(ManagementAuditLogPath)\qvsSettings\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+
+//QV10
+If FileSize('$(ManagementAuditLogPath)\QvWebServiceResource\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'QvWebServiceResrouce' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     ServerAddress, 
+     //ShowAlerts, 
+     //ServerName, 
+     Username, 
+     Password
+FROM
+$(ManagementAuditLogPath)\QvWebServiceResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+If FileSize('$(ManagementAuditLogPath)\qvwSettings\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionId, 
+	 'QVWSettings' AS AuditLogType,
+    UserId AS ModifiedByUser, 
+     Timestamp, 
+     Date(Timestamp) &'_'& Hour(Timestamp)&'_'& Minute(Timestamp) as DateHourKey,
+     Key, 
+     Value
+FROM
+$(ManagementAuditLogPath)\qvwSettings\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF; 
+
+
+
+If FileSize('$(ManagementAuditLogPath)\SourceDocument\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID,
+	 'SourceDocument' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Path, 
+     FolderID, 
+     DistributionServiceID
+FROM
+$(ManagementAuditLogPath)\SourceDocument\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+//QV10
+If FileSize('$(ManagementAuditLogPath)\SourceDocumentFolderResource\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'SourceDocumentFolderResource' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     Path, 
+     //SendAlertEmailForDocumentAdministrators, 
+     FolderType, 
+     DistributionServiceID, 
+     QlikViewServerID
+FROM
+$(ManagementAuditLogPath)\SourceDocumentFolderResource\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF; 
+
+If FileSize('$(ManagementAuditLogPath)\TaskDependency\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'TaskDependency' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     TaskID, 
+     TaskType, 
+     DependentTaskID, 
+     DependentTaskType
+FROM
+$(ManagementAuditLogPath)\TaskDependency\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+
+If FileSize('$(ManagementAuditLogPath)\TaskCategory\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'TaskCategory' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     TaskID, 
+     CategoryID
+FROM
+$(ManagementAuditLogPath)\TaskCategory\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+If FileSize('$(ManagementAuditLogPath)\Trigger\*.txt') > 0 Then
+
+Outer Join
+LOAD TransactionID,
+	 'Trigger' AS AuditLogType, 
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     DayNumbers, 
+     Months, 
+     TimeContraintFrom, 
+     TimeContraintTo, 
+     MainTriggerID, 
+     TaskID, 
+     Occourence, 
+     AndTimeConstraintMinutes, 
+     ExpireAt, 
+     RunTaskID, 
+     EnableAt, 
+     Enabled, 
+     TriggerType, 
+     Days, 
+     EDXPassword, 
+     StartAt, 
+     MaxCount, 
+     Count
+FROM
+$(ManagementAuditLogPath)\Trigger\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+
+
+//QV10
+If FileSize('$(ManagementAuditLogPath)\Workorderversion\*.txt') > 0 AND Left(QlikViewVersion(), 2) = 10 Then
+
+Outer Join
+LOAD TransactionID, 
+	 'WorkOrderVersion' AS AuditLogType,
+     ChangeType, 
+     ModifiedTime, 
+     ModifiedTime AS Timestamp,
+     Date(ModifiedTime) &'_'& Hour(ModifiedTime)&'_'& Minute(ModifiedTime) as DateHourKey,
+     ModifiedByUser, 
+    ID AS MGMTAuditID, 
+     CurrentWorkorderID//, 
+     //CurrentConfigurationID
+FROM
+$(ManagementAuditLogPath)\Workorderversion\*.txt
+(txt, codepage is 1252, embedded labels, delimiter is '\t', msq);
+ENDIF;
+
+Let vMGMTAudit = 'MGMTAudit';
+Drop Table MGMTAuditDummy;
+Errormode = 1;
+ ENDIF;
+///$tab DSC New
+//Create a Dummy table in the event there is no DSC log data (used later on in the Date/Time tab)
+TRACE ============ Create a DSC dummy table;
+DSCDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, DSCDummy
+     
+];
+Let vDSC = 'DSCDummy';
+
+
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+If FileSize('$(DSCLogPath)\*.txt') > 0 Then
+TRACE ============ Load data from DSC logs;
+Let GetRegDSC = GetRegistryString('HKEY_CURRENT_USER\Control Panel\International', 'sShortDate');
+DirectorySvcConnector:
+LOAD 
+	@1 As @1c,
+	@2 AS DSCErrorType,
+	@3 AS DSCMessage,
+	'$(DSCNode1)' AS DSCNode,
+
+If('$(GetRegDSC)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS DSCDate,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS DSCDay,	
+			
+If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS DSCYear,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS DSCMonth,
+					
+Right(SubField(@1, ':', -3),2) AS DSCHour, // 11/11/1111 11:11:11		
+SubField(@1, ':', -2) AS DSCMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS DSCSecond,  // 11/11/1111 11:11:11
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey, //MM/DD/YYYY_HH_MM
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS DSCTimestamp,
+	
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp 
+FROM
+$(DSCLogPath)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));
+
+//Give the variable a new value, later called in the Date/Time tab
+Let vDSC = 'DirectorySvcConnector';
+Drop Table DSCDummy;
+ENDIF;
+
+////If using a 2 node cluster
+If FileSize('$(DSCLogPath2)\*.txt') > 0 AND len('$(DSCNode2)') > 0 Then
+TRACE ============ Load data from DSC logs of second instance if declared;
+Concatenate
+
+LOAD 
+	@1 As @1c,
+	@2 AS DSCErrorType,
+	@3 AS DSCMessage,
+	'$(DSCNode2)' AS DSCNode,
+
+If('$(GetRegDSC)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS DSCDate,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS DSCDay,	
+			
+If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS DSCYear,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS DSCMonth,
+					
+Right(SubField(@1, ':', -3),2) AS DSCHour, // 11/11/1111 11:11:11		
+SubField(@1, ':', -2) AS DSCMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS DSCSecond,  // 11/11/1111 11:11:11
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey, //MM/DD/YYYY_HH_MM
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS DSCTimestamp,
+	
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp
+FROM
+$(DSCLogPath2)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));
+ENDIF;
+
+
+////If using a 3 node cluster
+If FileSize('$(DSCLogPath3)\*.txt') > 0 AND len('$(DSCNode3)') > 0 Then
+TRACE ============ Load data from third instance of DSC if declared;
+Concatenate
+
+LOAD 
+	@1 As @1c,
+	@2 AS DSCErrorType,
+	@3 AS DSCMessage,
+	'$(DSCNode3)' AS DSCNode,
+
+If('$(GetRegDSC)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS DSCDate,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS DSCDay,	
+			
+If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS DSCYear,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS DSCMonth,
+					
+Right(SubField(@1, ':', -3),2) AS DSCHour, // 11/11/1111 11:11:11		
+SubField(@1, ':', -2) AS DSCMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS DSCSecond,  // 11/11/1111 11:11:11
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey, //MM/DD/YYYY_HH_MM
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS DSCTimestamp,
+	
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp
+FROM
+$(DSCLogPath3)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));
+ENDIF;
+
+
+
+////If using a 4 node cluster
+If FileSize('$(DSCLogPath4)\*.txt') > 0 AND len('$(DSCNode4)') > 0 Then
+TRACE ============ Load data from  fourth instance of DSC if declared;
+Concatenate
+
+LOAD 
+	@1 As @1c,
+	@2 AS DSCErrorType,
+	@3 AS DSCMessage,
+	'$(DSCNode4)' AS DSCNode,
+
+If('$(GetRegDSC)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS DSCDate,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS DSCDay,	
+			
+If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS DSCYear,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS DSCMonth,
+					
+Right(SubField(@1, ':', -3),2) AS DSCHour, // 11/11/1111 11:11:11		
+SubField(@1, ':', -2) AS DSCMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS DSCSecond,  // 11/11/1111 11:11:11
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey, //MM/DD/YYYY_HH_MM
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS DSCTimestamp,
+	
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp
+FROM
+$(DSCLogPath4)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));
+ENDIF;
+
+////If using a 3 node cluster
+If FileSize('$(DSCLogPath5)\*.txt') > 0 AND len('$(DSCNode5)') > 0 Then
+TRACE ============ Load data from fifth instance of DSC logs if declared;
+Concatenate
+
+LOAD 
+	@1 As @1c,
+	@2 AS DSCErrorType,
+	@3 AS DSCMessage,
+	'$(DSCNode5)' AS DSCNode,
+
+If('$(GetRegDSC)' = 'yyyy-MM-dd',
+	Date(@1, 'YYYY-MM-DD'),
+		Date(SubField(@1, ' ', -2), 'YYYY-MM-DD')) AS DSCDate,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+	'0' & Left(SubField(@1, '-', -1), 2),	
+	If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+		 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 		SubField(@1,'/',-2)))) AS DSCDay,	
+			
+If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+	SubField(@1, '-', -3),	
+		Right(SubField(@1,' ',-2), 4)) AS DSCYear,
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3)))) AS DSCMonth,
+					
+Right(SubField(@1, ':', -3),2) AS DSCHour, // 11/11/1111 11:11:11		
+SubField(@1, ':', -2) AS DSCMinute, // 11/11/1111 11:11:11
+Left(SubField(@1, ':', -1), 2) AS DSCSecond,  // 11/11/1111 11:11:11
+					
+If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) =1,		//2012-09-10 00:00:00.14976		
+	 '0' & SubField(@1, '-', -2),
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(SubField(@1, '-', -2)) >1, SubField(@1, '-', -2),
+			If(len(SubField(@1, '/', -3)) = 1, '0' & SubField(@1, '/', -3),
+				SubField(@1, '/', -3))))
+		&'/'& 
+		If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) =1,		//2012-09-10 00:00:00.14976	
+			'0' & Left(SubField(@1, '-', -1), 2),	
+				If('$(GetRegDSC)' = 'yyyy-MM-dd' AND len(Left(SubField(@1, '-', -1), 2)) > 1, Left(SubField(@1, '-', -1), 2),	
+					 If(len(Left(SubField(@1,'/',-2), 2)) =1, '0' & SubField(@1,'/',-2),
+		 				SubField(@1,'/',-2)))) 
+			&'/'& 
+				If('$(GetRegDSC)' = 'yyyy-MM-dd',		//2012-09-10 00:00:00.14976		
+					SubField(@1, '-', -3), Right(SubField(@1,' ',-2), 4))
+					& '_' &
+						Right(SubField(@1, ':', -3),2)
+							 & '_' &
+							 	SubField(@1, ':', -2) AS DateHourKey, //MM/DD/YYYY_HH_MM
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS DSCTimestamp,
+	
+	
+If('$(GetRegDSC)' = 'yyyy-MM-dd', //Swed server = 2012-09-10 00:00:00.1497641
+	Timestamp(@1),		
+	Timestamp(Right(SubField(@1,' ',-2), 4) & '-' & SubField(@1, '/', -3) & '-' & SubField(@1,'/',-2) & ' ' & Left(SubField(@1, ' ', -1), 8), 'YYYY-MM-DD hh:mm:ss')
+			) AS Timestamp
+FROM
+$(DSCLogPath5)\*.txt
+(txt, utf8, no labels, delimiter is '\t', msq, filters(
+Remove(Row, RowCnd(Compound,
+	RowCnd(Every),
+	RowCnd(CellValue, 1, StrCnd(start, '1', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '2', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '3', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '4', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '5', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '6', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '7', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '8', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '9', not)),
+	RowCnd(CellValue, 1, StrCnd(start, '0', not))
+))
+));
+ENDIF;
+///$tab DocUse
+//If FileSize('$(QVSPath)\Sessions*.log') > 0 Then
+If FileSize('$(QVSPath)\Sessions_*.log') > 0 Then
+TRACE ============ Load data from session logs for DocUseCount table;
+DocUseCount:
+LOAD
+	DocUseKey,
+	COUNT([Session Start]) as SessionCount
+RESIDENT Sessions
+GROUP BY DocUseKey;
+
+//	User Summary
+UserSummary:
+LOAD
+	AuthenticatedUser,
+	IF(Sum(IF(SessionsTimestamp>=Today(),1,0))>0,1,0) as UserToday,
+	IF(Sum(IF(SessionsTimestamp>=Today()-1 and SessionsTimestamp<Today(),1,0))>0,1,0) as UserYesterday,
+	IF(Sum(IF(Num(interval(Today()-SessionsTimestamp,'dd'))<=7,1,0))>0,1,0) as UserWeek,
+	IF(Sum(IF(Num(interval(Today()-SessionsTimestamp,'dd'))<=28,1,0))>0,1,0) as UserMonth
+RESIDENT Sessions
+GROUP BY AuthenticatedUser;
+
+
+//From QV9 Server Monitoring
+TRACE ============ Create MaxDateIsland table from QV9 Server Mon;
+MaxDateIsland:
+LOAD 
+	1 as MaxID,
+	MAX([Session Start])  as MaxSessionDT
+resident Sessions;
+ENDIF;
+
+LET vMaxMonth = Month(PEEK('MaxSessionDT',0,'MaxDateIsland'));
+LET vMaxDay = Date(PEEK('MaxSessionDT',0,'MaxDateIsland'), 'YYYY-MM-DD');
+LET vMaxTaskDate = Date(PEEK('MaxTaskDate',0,'MaxDateIsland'));
+
+///$tab Concurrent Sessions
+////Create a Dummy table in the event there is no Session log data (used later on in the Date/Time tab)
+//ConcDummy:
+//LOAD * INLINE [
+//     Timestamp, DateHourKey, ConcDummy
+//     
+//];
+//
+//Let vConcSes = 'ConcDummy';
+////	SCRIPT SOURCE:	QlikView Server Performance application
+////	LOCATION:		http://demo.qliktech.com
+//
+////Create a condition to check for a file in the file path, drop the dummy table if so and change the variable
+//
+//If FileSize('$(QVSPath)\Sessions_$(QVSClusterNode1)*.log') > 0 Then
+////From the QV9 Server Monitoring app
+//ConcurrentSessionsTMP:
+//Load distinct
+//	SessionID,
+//	1 as CountSessions,
+//	Timestamp(Date(Floor([Session Start])) + MakeTime(Hour([Session Start]) + IterNo() - 1)) as Timestampnew
+//Resident Sessions
+//While Hour([Session Start]) + IterNo()-1 <= Hour(Timestamp)
+//;
+//Drop Field  SessionID from Sessions;
+//
+//ConcurrentSessions:
+//Load distinct
+//	Date(Timestampnew) &'_'& Hour(Timestampnew)&'_'& Minute(Timestampnew) as DateHourKey,
+//	Timestampnew as Timestamp,
+//	SessionID,
+//	CountSessions
+//Resident ConcurrentSessionsTMP
+//;
+//
+//Drop Table ConcurrentSessionsTMP;
+//
+////	USERS
+//ConcurrentUsersTMP:
+//Load distinct
+//	UserID,
+//	1 as CountUserID,
+//	Timestamp(Date(Floor([Session Start])) + MakeTime(Hour([Session Start]) + IterNo() - 1)) as Timestampnew
+//Resident Sessions
+//WHile Hour([Session Start]) + IterNo()-1 <= Hour(Timestamp)
+//;
+//Drop Field  UserID from Sessions;
+////Give the variable a new value, later called in the Date/Time tab
+//Let vConcSes = 'ConcurrentSessions';
+//Drop Table ConcDummy;
+//ENDIF;
+///$tab OS Logs
+//Load Data from the OS Events logs 
+//Create a Dummy table in the event there is no OSEvent log data (used later on in the Date/Time tab)
+TRACE Loading dummy table =================;
+OSDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, OSDummy
+];
+Let vOSEvents = 'OSDummy';
+
+
+
+TRACE Loading Windows Application Logs==============;
+//Create a condition to check for a file in the file path, drop the dummy table if so and change the vEvents variable
+If FileSize('$(OSLogPath)\App_*.csv') > 0 Then
+TRACE Loading table  to determine variables for Windows Application Logs==============;
+StageTemp:
+Load
+Subfield(Trim(subfield(FileName(), '.', -2)), '_', -1)  AS File
+FROM
+$(OSLogPath)\App_*.csv;
+//EXIT Script;
+
+Stage:
+Load *,
+FieldValueCount('File') AS NodeCount
+Resident StageTemp;
+Let OSApp1 = Upper(FieldValue('File', 1));
+Let OSApp2 = Upper(FieldValue('File', 2));
+Let OSApp3 = Upper(FieldValue('File', 3));
+Let OSApp4 = Upper(FieldValue('File', 4));
+Let OSApp5 = Upper(FieldValue('File', 5));
+Drop Table Stage;
+Drop Table StageTemp;
+
+OSLogs:
+LOAD Level, 
+     [Date and Time], //MM-DD-YYYY HH:MM:SS
+     Source, 
+     [Event ID], 
+     [Task Category], 
+     'Windows - App' AS LogType,
+     Upper(Subfield(Trim(subfield(FileName(), '.', -2)), '_', -1)) AS ProdServer,
+     Message AS OSMessage,
+     Mid([Date and Time],7,4) & '-' & Mid([Date and Time],1,2) & '-' & Mid([Date and Time],4,2) & ' '& Mid([Date and Time], 12,2)&':'& Mid([Date and Time],15,2) &':'& Right([Date and Time], 2) AS Timestamp,
+	 Mid([Date and Time],7,4) & '-' & Mid([Date and Time],1,2) & '-' & Mid([Date and Time],4,2) & ' '& Mid([Date and Time], 12,2)&':'& Mid([Date and Time],15,2) &':'& Right([Date and Time], 2) AS OSTimestamp,
+	 Mid([Date and Time],1,2) & '/' & Mid([Date and Time],4,2) & '/' & Mid([Date and Time],7,4) &'_'& Mid([Date and Time], 12,2)&'_'& Mid([Date and Time],15,2) as DateHourKey  //MM/DD/YYYY_HH_MM
+FROM
+$(OSLogPath)\App_*.csv
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq)
+Where len(Message) > 0;
+Let vOSEvents = 'OSLogs';
+Drop Table OSDummy;
+ENDIF;
+
+
+
+TRACE Loading Windows System Logs==============;
+If FileSize('$(OSLogPath)\Sys_*.csv') > 0 Then
+
+TRACE Loading table  to determine variables for Windows System Logs==============;
+StageTemp:
+Load
+upper(Subfield(Trim(subfield(FileName(), '.', -2)), '_', -1))  AS File
+FROM
+$(OSLogPath)\Sys_*.csv;
+
+Stage:
+Load *,
+FieldValueCount('File') AS NodeCount
+Resident StageTemp;
+Let OSSys1 = Upper(FieldValue('File', 1));
+Let OSSys2 = Upper(FieldValue('File', 2));
+Let OSSys3 = Upper(FieldValue('File', 3));
+Let OSSys4 = Upper(FieldValue('File', 4));
+Let OSSys5 = Upper(FieldValue('File', 5));
+Drop Table Stage;
+Drop Table StageTemp;
+Outer Join (OSLogs)
+
+LOAD Level, 
+     [Date and Time], 
+     Source, 
+     [Event ID], 
+     [Task Category], 
+     'Windows - Sys' AS LogType,
+     Upper(Subfield(Trim(subfield(FileName(), '.', -2)), '_', -1)) AS ProdServer,
+     Message AS OSMessage,
+     Mid([Date and Time],7,4) & '-' & Mid([Date and Time],1,2) & '-' & Mid([Date and Time],4,2) & ' '& Mid([Date and Time], 12,2)&':'& Mid([Date and Time],15,2) &':'& Right([Date and Time], 2) AS Timestamp,
+	 Mid([Date and Time],7,4) & '-' & Mid([Date and Time],1,2) & '-' & Mid([Date and Time],4,2) & ' '& Mid([Date and Time], 12,2)&':'& Mid([Date and Time],15,2) &':'& Right([Date and Time], 2) AS OSTimestamp,
+	 Mid([Date and Time],1,2) & '/' & Mid([Date and Time],4,2) & '/' & Mid([Date and Time],7,4) &'_'& Mid([Date and Time], 12,2)&'_'& Mid([Date and Time],15,2) as DateHourKey //MM/DD/YYYY_HH_MM
+FROM
+$(OSLogPath)\Sys_*.csv
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq)
+Where len(Message) > 0;
+ENDIF;
+
+
+
+
+////////Security Logs
+TRACE Loading Windows Security Logs==============;
+If FileSize('$(OSLogPath)\Sec_*.csv') > 0  Then
+TRACE Loading table  to determine variables for Windows Security Logs==============;
+StageTemp:
+Load
+Subfield(Trim(subfield(FileName(), '.', -2)), '_', -1)  AS File
+FROM
+$(OSLogPath)\Sec_*.csv;
+//EXIT Script;
+
+Stage:
+Load *,
+FieldValueCount('File') AS NodeCount
+Resident StageTemp;
+Let OSSec1 = Upper(FieldValue('File', 1));
+Let OSSec2 = Upper(FieldValue('File', 2));
+Let OSSec3 = Upper(FieldValue('File', 3));
+Let OSSec4 = Upper(FieldValue('File', 4));
+Let OSSec5 = Upper(FieldValue('File', 5));
+Drop Table Stage;
+Drop Table StageTemp;
+
+Outer Join (OSLogs)
+
+LOAD Keywords AS Level, 
+     [Date and Time], 
+     Source, 
+     [Event ID], 
+     [Task Category], 
+     'Windows - Sec' AS LogType,
+     Upper(Subfield(Trim(subfield(FileName(), '.', -2)), '_', -1)) AS ProdServer,
+     Message AS OSMessage,
+     Mid([Date and Time],7,4) & '-' & Mid([Date and Time],1,2) & '-' & Mid([Date and Time],4,2) & ' '& Mid([Date and Time], 12,2)&':'& Mid([Date and Time],15,2) &':'& Right([Date and Time], 2) AS Timestamp,
+	 Mid([Date and Time],7,4) & '-' & Mid([Date and Time],1,2) & '-' & Mid([Date and Time],4,2) & ' '& Mid([Date and Time], 12,2)&':'& Mid([Date and Time],15,2) &':'& Right([Date and Time], 2) AS OSTimestamp,
+	 Mid([Date and Time],1,2) & '/' & Mid([Date and Time],4,2) & '/' & Mid([Date and Time],7,4) &'_'& Mid([Date and Time], 12,2)&'_'& Mid([Date and Time],15,2) as DateHourKey //MM/DD/YYYY_HH_MM
+FROM
+$(OSLogPath)\Sec_*.csv
+(txt, codepage is 1252, embedded labels, delimiter is ',', msq)
+Where len(Message) > 0;
+ENDIF;
+///$tab Publisher
+TRACE ============ Create Log Index Dummy;
+LIDummy:
+LOAD * INLINE [
+     Timestamp, DateHourKey, LiDummy
+     
+];
+Let vLI = 'LIDummy';
+
+// Start of [TaskLogIndex] LOAD statements
+If FileSize('$(TaskLogIndexPath)\TaskLogIndex_*.xml') > 0 Then 
+TRACE ============ Create LogIndex table;
+LogIndex:
+LOAD LogID ,
+    TaskName AS Name, //<< Changed for QV 11
+    Right(Date, 2) AS LogTaskDay,
+    Left(Date, 4) AS LogTaskYear,
+    If(len(Date) =8, Mid(Date, 5,2), Mid(Date, 6, 2)) AS LogTaskMonth,
+    // Date    //QV10 is 20120326  //QV 11 is Date="2012-04-11" Time="20:23:06" 
+    If(len(Time) <> 6, Time, Left(Time, 2) & ':' & Mid(Time, 3,2) & ':' & Right(Time, 2)) AS Time,  //timestamp format is 2011-09-30 12:29:53
+    If(Len(Date) =8, Left(Date, 4) & '-' & Mid(Date, 5, 2) & '-' & Right(Date, 2) & ' ' & If(Len(Time) = 6, Left(Time, 2) & ':' & Mid(Time, 3,2) & ':' & Right(Time, 2)), Date & ' ' & Time) AS Timestamp,
+    If(Len(Date) =8, Left(Date, 4) & '-' & Mid(Date, 5, 2) & '-' & Right(Date, 2) & ' ' & If(Len(Time) = 6, Left(Time, 2) & ':' & Mid(Time, 3,2) & ':' & Right(Time, 2)), Date & ' ' & Time) AS StartedAt,
+    If(len(Date) =8, Mid(Date, 5,2), Mid(Date, 6, 2)) & '/' & Right(Date, 2) & '/' & Left(Date, 4) & '_' & If(Len(Time) = 6, Left(Time, 2) & '_' & Mid(Time, 3,2), ' ' & Left(Time,5)) AS DateHourKey,	//MM/DD/YYYY_HH_MM
+    ClusterID,
+    FullLogPath
+FROM $(TaskLogIndexPath)\TaskLogIndex_*.xml (XmlSimple, Table is [Root/LogIndex]);
+// End of [TaskLogIndex] LOAD statements
+
+Let vLI = 'LogIndex';
+Drop Table 'LIDummy';
+ENDIF;
+
+
+// Start of [TaskResult_0b29f507-a990-4804-87ad-51442e757461.xml] LOAD statements
+If FileSize('$(TaskResultPath)\TaskResult_*.xml') > 0 Then
+TRACE ============ Create a TaskResults table;
+TaskResults:
+LOAD TaskID  AS DistributeTaskID,
+	TaskID AS DistributeTaskIDTR,
+    OwnedByClusterID,
+    RunID, 
+    TaskManuallyAborted,
+    PreviousRunHadErrors,
+    InternalError,
+    LastExecution,
+    If(Len(Trim(Right(SubField(StartedAt,'/',-2), 2))) = 2 , Right(SubField(StartedAt,'/',-2), 2), '0' & Trim(Right(SubField(StartedAt,'/',-2), 2))) AS TRDay,
+    Date(StartedAt, 'MM') 				  AS TRMonth,
+    Left(SubField(StartedAt, '/', -1), 4) AS TRYear,
+   	If(Len(Trim(Right(SubField(StartedAt,':',-3), 2))) = 2, Right(SubField(StartedAt,':',-3), 2), '0' & Trim(Right(SubField(StartedAt,':',-3), 2)))
+						& ':' & 
+		SubField(StartedAt,':',-2)
+						& ':' & 
+		Left(SubField(StartedAt,':',-1), 2)AS TRTime,
+	///////
+	//yyyy/mm/dd hh:mm:ss
+	Left(SubField(StartedAt, '/', -1), 4) 
+		& '-' & 
+	Date(StartedAt, 'MM')
+		& '-' & 
+	If(Len(Trim(Right(SubField(StartedAt,'/',-2), 2))) = 2 , Right(SubField(StartedAt,'/',-2), 2), '0' & Trim(Right(SubField(StartedAt,'/',-2), 2)))
+		& ' ' & 
+	   		If(Len(Hour(StartedAt)) = 2, Hour(StartedAt), '0' & Hour(StartedAt))
+						& ':' & 
+		SubField(StartedAt,':',-2)
+						& ':' & 
+		Left(SubField(StartedAt,':',-1), 2) AS StartedAt,
+		
+	Left(SubField(FinishedAt, '/', -1), 4) 
+		& '-' & 
+	Date(FinishedAt, 'MM')
+		& '-' & 
+	If(Len(Trim(Right(SubField(FinishedAt,'/',-2), 2))) = 2 , Right(SubField(FinishedAt,'/',-2), 2), '0' & Trim(Right(SubField(FinishedAt,'/',-2), 2)))
+		& ' ' & 
+	   		If(Len(Hour(FinishedAt)) = 2, Hour(FinishedAt), '0' & Hour(FinishedAt))
+						& ':' & 
+		SubField(FinishedAt,':',-2)
+						& ':' & 
+		Left(SubField(FinishedAt,':',-1), 2) AS FinishedAt,      
+    MaxRunTime,
+    StartCount,
+    HasWarnings,
+    Status
+    //%Key_Root_1C2F7E198516FFEA    // Key for this table: Root
+FROM $(TaskResultPath)\TaskResult_*.xml (XmlSimple, Table is [Root]);
+// End of [TaskResult_0b29f507-a990-4804-87ad-51442e757461.xml] LOAD statements
+
+
+//******Legacy script;  in need of work still in this section*******
+
+//// --------------------------------------------------------------------------------------------
+////exclude the jobs that ran for significant amounts of time
+////these jobs were due to server issues, removing them makes more meaningful analysis possible
+////NOTE: you will need to modify this section for your specific needs
+//// --------------------------------------------------------------------------------------------
+//convert StartedAt and FinishedAt to dates & timestamps  
+LEFT JOIN LOAD 
+	DistributeTaskID,
+	Time(StartedAt) AS JobStart,
+	Time(FinishedAt) AS JobFinish,	
+	Date(Left(FinishedAt,10)) as JobFinishDt,
+	Autonumber(Left(StartedAt,19) & '_' & RunID) as JobDayKey
+RESIDENT TaskResults;
+
+
+//calculate additional stats related to the individual jobs by the day the job was run (not at job id level)
+TRACE ============ Create Aggregated Job Stats table (legacy);
+Aggregated_JobStats:
+LOAD 
+	JobDayKey,
+	Count(DistributeTaskID) as JobCount
+RESIDENT TaskResults
+GROUP BY JobDayKey;
+
+
+////////////////////////////////////////////////////////////////////////////
+TRACE ============ Create Task Final Entry table from Task Result logs;
+TaskFinalEntry:
+LOAD Type As LogFinalEntryType,
+    	Left(SubField(Date, '/', -1), 4) 
+		& '-' & 
+	Date(Date, 'MM')
+		& '-' & 
+	If(Len(Trim(Right(SubField(Date,'/',-2), 2))) = 2 , Right(SubField(Date,'/',-2), 2), '0' & Trim(Right(SubField(Date,'/',-2), 2)))
+		& ' ' & 
+	   		If(Len(Hour(Date)) = 2, Hour(Date), '0' & Hour(Date))
+						& ':' & 
+		SubField(Date,':',-2)
+						& ':' & 
+		Left(SubField(Date,':',-1), 2) AS FinishedAt,
+    Text
+    //%Key_Root_1C2F7E198516FFEA    // Key to parent table: Root
+FROM $(TaskResultPath)\TaskResult_*.xml (XmlSimple, Table is [Root/LogFinalEntries/LogFinalEntry]);
+ENDIF;
+
+
+//QV11 Task Execution History (new logging)
+IF Left(QlikViewVersion(), 2) = 11 And FileSize('$(TaskExecutionHistoryPath)\*.xml') > 0 Then
+TRACE ============ If current version is QV11 then load Task Execution History;
+ // Start of [TaskExecutionHistory_7ac273a0-83d5-4c28-a592-8ec4edf2b728.xml] LOAD statements
+TaskExecutionHistoryItem:
+LOAD TaskId AS DistributeTaskID,
+	TaskId AS DistributeTaskIDTE,
+    TaskLogId AS LogID,
+    TaskStatus,
+    StartTimeStamp,
+    EndTimeStamp, //EndTimeStamp="4/11/2012 8:41:44 PM"      .......timestamp format is 2011-09-30 12:29:53
+    IF(Mid(EndTimeStamp, 9,1) = ' ', Mid(EndTimeStamp, 5, 4), // 1/1/1111
+		 IF(Mid(EndTimeStamp, 10,1) = ' ', Mid(EndTimeStamp, 6, 4),	// 1/11/1111, 11/1/1111	
+				IF(Mid(EndTimeStamp, 11,1) = ' ', Mid(EndTimeStamp, 7, 4) // 11/11/1111
+					, ''))) AS PubYear, 
+	IF(Mid(EndTimeStamp, 2,1) = '/', 0 & Left(EndTimeStamp, 1), // 1/*
+		 IF(Mid(EndTimeStamp, 3,1) = '/', Left(EndTimeStamp, 2), ''// 11/*
+				)) AS PubMonth,
+	IF(Mid(EndTimeStamp, 2,1) = '/' AND Mid(EndTimeStamp,4,1) = '/', 0 & Mid(EndTimeStamp, 3,1), // for 1/1/2011
+		IF(Mid(EndTimeStamp, 2,1) = '/' AND Mid(EndTimeStamp,5,1) = '/', Mid(EndTimeStamp, 3,2),// for 1/11/2011
+			IF(Mid(EndTimeStamp, 3,1) = '/' AND Mid(EndTimeStamp,5,1) = '/',0 &  Mid(EndTimeStamp, 3,1),// for 11/1/2011
+				IF(Mid(EndTimeStamp, 3,1) = '/' AND Mid(EndTimeStamp,6,1) = '/', Mid(EndTimeStamp, 4,2)))) //for 11/11/2011
+			) AS PubDay,
+
+		SubField(EndTimeStamp,':',-2) AS PubMin,
+		Left(SubField(EndTimeStamp,':',-1), 2) AS PubSec,
+		If(Len(Trim(Right(SubField(EndTimeStamp,':',-3), 2))) = 2, Right(SubField(EndTimeStamp,':',-3), 2), '0' & Trim(Right(SubField(EndTimeStamp,':',-3), 2))) AS PubHour,
+    Duration 
+FROM $(TaskExecutionHistoryPath)\*.xml  (XmlSimple, Table is [Root/TaskExecutionHistoryItems/TaskExecutionHistoryItem]);
+// End of [TaskExecutionHistory_7ac273a0-83d5-4c28-a592-8ec4edf2b728.xml] LOAD statements
+
+ENDIF;
+
+
+
+
+
+IF Left(QlikViewVersion(), 2) = 10 AND FileSize('$(WorkOrderPath).xml') > 0 Then
+TRACE ============ If current version is QV10, the load Workorder data;
+//QV 10 ONLY
+CurrentDistributionTasks:
+LOAD ID AS DistributeTaskID,
+    Name as DistName,
+    Enabled AS ISEnabled,
+    NumberOfAttempts,
+    SendAlertMail,
+    AllowPluginClient,
+    AllowMobileClient,
+    AllowDownloadClient,
+    AllowZFClient,
+    AllowPDFGeneration,
+    SendNotificationEmail,
+    NameTemplate,
+    [AbendTriggers/RunTimeTrigger/ID] as [RunTimeTrigger/ID],
+    [AbendTriggers/RunTimeTrigger/MaximumMinutes] as MaximumMinutes,
+    [Resources/Resource/Type] as WorkOrderType,
+    [Resources/Resource/ID] as [Resource/ID],
+    [Resources/Resource/AddRecipient/ObjectType] as ObjectType,
+    [Resources/Resource/AddRecipient/ID] as [AddRecipient/ID],
+    [SourceDocument/FileName] as FileName,
+    [SourceDocument/ClearLocks] as ClearLocks,
+    [SourceDocument/ClearAll] as ClearAll,
+    [SourceDocument/ClearAlwaysOneSelected] as ClearAlwaysOneSelected,
+    [SourceDocument/SetScript] as SetScript,
+    [SourceDocument/ReapplySelections] as ReapplySelections,
+    [SourceDocument/LoadType] as LoadType,
+    [SourceDocument/CollaborationCreation/Mode] as [CollaborationCreation/Mode],
+    [SourceDocument/AutoloadOptions/MaxOpenSessions] as MaxOpenSessions,
+    [SourceDocument/AutoloadOptions/Mode] as [AutoloadOptions/Mode],
+    [SourceDocument/AutoloadOptions/FromTime] as FromTime,
+    [SourceDocument/AutoloadOptions/ToTime] as ToTime,
+    [SourceDocument/AutoloadOptions/DayOfWeek] as [AutoloadOptions/DayOfWeek],
+    [SourceDocument/OpenRestrictions/AlwaysOpenable] as AlwaysOpenable,
+    [TaskCategories/TaskCategory/Name] as [TaskCategory/Name],
+    [StartTriggers/ScheduleTrigger/ID] as [ScheduleTrigger/ID],
+    [StartTriggers/ScheduleTrigger/Enabled] as [ScheduleTrigger/Enabled],
+    [StartTriggers/ScheduleTrigger/EnableDateTime] as EnableDateTime,
+    [StartTriggers/ScheduleTrigger/ExpireDateTime] as ExpireDateTime,
+    [StartTriggers/ScheduleTrigger/RecurrenceType] as RecurrenceType,
+    [StartTriggers/ScheduleTrigger/RepeatEvery] as RepeatEvery,
+    [StartTriggers/ScheduleTrigger/HourStart] as HourStart,
+    [StartTriggers/ScheduleTrigger/DayStart] as DayStart,
+    [StartTriggers/ScheduleTrigger/RepeatMaxCount] as RepeatMaxCount,
+    [StartTriggers/ScheduleTrigger/RecurrenceFilter/Month] as WorkOrderMonth,
+    [StartTriggers/ScheduleTrigger/RecurrenceFilter/DayOfWeek] as [RecurrenceFilter/DayOfWeek],
+    [StartTriggers/ScheduleTrigger/RecurrenceFilter/Day] as WorkOrderDay,
+    [StartTriggers/ScheduleTrigger/RecurrenceFilter/Hour] as WorkOrderHour,
+    [StartTriggers/ScheduleTrigger/RecurrenceFilter/RecurrenceHit] as RecurrenceHit,
+    %Key_Workorder_C7E4B7943B0CC10D    // Key to parent table: Workorder
+FROM $(WorkOrderPath).xml (XmlSimple, Table is [Workorder/Tasks/DistributeTask]);
+
+//Former LogItem table
+Left Join
+LOAD Destination,
+    LogLevel,
+    Information,
+    Warning,
+    Error,
+    %Key_Workorder_C7E4B7943B0CC10D    // Key to parent table: Workorder
+FROM $(WorkOrderPath).xml (XmlSimple, Table is [Workorder/Configuration/Logging/LogItem]);
+
+//Former Workorder table
+Left Join
+LOAD Version,
+    RunLevel,
+    ID AS WorkOrderID,
+    [Configuration/ApplicationDataFolder/Path] as WorkOrderPath,
+    [Configuration/QVBConfig/MaxSimultaneousQVBs] as MaxSimultaneousQVBs,
+    [Configuration/QVBConfig/MaxSimultaneousReaderQVBs] as MaxSimultaneousReaderQVBs,
+    [Configuration/QVBConfig/CPUAffinity] as CPUAffinity,
+    [Configuration/QVBConfig/CPUPriority] as CPUPriority,
+    [Configuration/DirectoryServiceConnectorSettings/ID] as [DirectoryServiceConnectorSettings/ID],
+    [Configuration/DirectoryServiceConnectorSettings/Url] as [DirectoryServiceConnectorSettings/Url],
+    [Configuration/DirectoryServiceConnectorSettings/Name] as [DirectoryServiceConnectorSettings/Name],
+    [Configuration/DirectoryServiceConnectorSettings/Username] as TaskUsername,
+    [Configuration/DirectoryServiceConnectorSettings/Password] as WprkOrderPassword,
+    [Configuration/DirectoryServiceConnectorSettings/LogLevel] as [DirectoryServiceConnectorSettings/LogLevel],
+    [Configuration/Logging/KeepMaxDays] as KeepMaxDays,
+    [Configuration/QVS/Enabled] as [QVS/Enabled],
+    [Configuration/QVS/Name] as [QVS/Name],
+    [Configuration/QVS/Cluster/Node/Url] as [Node/Url],
+    %Key_Workorder_C7E4B7943B0CC10D   // Key for this table: Workorder
+FROM $(WorkOrderPath).xml (XmlSimple, Table is [Workorder]) ;
+// End of [Workorder.xml] LOAD statements
+// End of QV 10 conditional 
+ENDIF;
+
+
+
+///$tab Pub3
+TRACE ============ Create PubTemp table from resident data;
+If FileSize('$(TaskLogIndexPath)\TaskLogIndex_*.xml') > 0 Then 
+PubTemp:
+Load
+DateHourKey,
+StartedAt,
+Name AS Text2,
+Timestamp,
+LogID
+Resident LogIndex;
+
+TRACE ============ join task result data;
+Left Join
+Load
+StartedAt,
+FinishedAt,
+StartedAt AS Timestamp,
+FinishedAt AS TaskFinishTime
+Resident TaskResults; 
+
+IF Left(QlikViewVersion(), 2) = 11 And FileSize('$(TaskExecutionHistoryPath)\*.xml') > 0 Then
+TRACE ============ Join task execution history from v11;
+Left Join
+LOAD
+LogID, 
+TaskStatus AS Sev2
+Resident TaskExecutionHistoryItem;
+
+ELSE 
+Left Join
+LOAD
+Null() AS Sev2, 
+Null() AS LogID;
+EndIF;
+
+IF Left(QlikViewVersion(), 2) = 10 Then 
+TRACE ============ join workorder from v10;
+Left Join
+LOAD
+FinishedAt,
+FinishedAt AS TaskFinishTime,
+LogFinalEntryType AS Sev2
+Resident TaskFinalEntry
+Where Not IsNull(LogFinalEntryType);
+ENDIF;
+
+ENDIF;
+///$tab Date/Time
+//	create table of dates using data loaded in this workbook
+TRACE ============ For variables set in previous tables, ;
+TRACE ============ load data and set time fields;
+TRACE ============ using the DateHourKey;
+For each myFile in '$(vPerf)', '$(vSes)', '$(vEvents)', /*'$(vConcSes)',*/ '$(vWebSvc)', '$(vDSC)', '$(vMGMT)', '$(vSAP)' , '$(vMGMTAudit)', '$(vSalesforce)', '$(vOSEvents)', '$(vIIS)', '$(vHTTP)', '$(vAudit)', '$(vLI)', '$(vQVSR)'
+	
+//From the QV9 Server Monitoring app
+
+Time:
+Load DISTINCT
+	DateHourKey,
+	Date(floor(Timestamp)) as Date,
+	weekday(Timestamp) as Weekday,
+	Year(Timestamp) as Year, 
+	Month(Timestamp) as Month,
+	Week(Timestamp) as Week, 
+	Day(Timestamp) as Day,
+	Hour(Time(Timestamp)) as Hour,
+	Minute(Time(Timestamp)) as Minute,
+	Date(MonthStart(Timestamp),'MMM-YYYY') as YearMonth,
+	WeekStart(Timestamp) as YearWeek
+resident $(myFile);
+Next
+
+
+Drop field Timestamp;
+LET vMaxDay = Date(PEEK('Date',0,'Time'), 'YYYY-MM-DD');
+
+LET maxdate=(peek('Date',0,'Time'));
+
+///$tab LogLocations
+//From QlikTech Support LogLocations QVW
+TRACE ============ Inline load of current log locations;
+LOG_LOCATIONS:
+LOAD * INLINE [
+    Acronym, Default Log Folder, Log File Name, Operating System, Service/Product, Versions
+    QVSRefManual, C:\Program Files\QlikView\Documentation, , ALL, QlikView PDF Manuals, 8 & 9
+    QVSRefManual, C:\Program Files\QlikView\Documentation, , ALL, QlikView PDF Manuals, 10
+    API, C:\Program Files\QlikView\Documentation, APIGuide.qvw, ALL, QlikView API Guide, 8 & 9
+    API, C:\Program Files\QlikView\Documentation, APIGuide.qvw, ALL, QlikView API Guide, 10
+    AR, C:\Program Files\QlikView\Documentation, QlikView Automation Reference.qvw, ALL, QlikView Automation Reference, 10
+    AP, C:\Documents and Settings\All Users\Application Data\QlikTech\Publisher\AccesspointService\Log, YYYYMMDD.xml, Windows 2003, QlikView Publisher AccessPoint Service, 8
+    CC, C:\Documents and Settings\All Users\Application Data\QlikTech\Publisher\CommandCenter\Log, YYYYMMDD.xml, Windows 2003, QlikView Publisher Command Center Service, 8
+    CC, C:\ProgramData\QlikTech\Publisher\CommandCenter\Log, YYYYMMDD.txt, Windows 2008, QlikView Publisher Command Center Service, 9
+    DS, C:\Documents and Settings\All Users\Application Data\QlikTech\DistributionService\1\Log, YYYYMMDD\TASKNAME\Tasklog.txt, Windows 2003, QlikView Distribution Service, 10
+    DS, C:\Documents and Settings\All Users\Application Data\QlikTech\DistributionService\1\Log, YYYYMMDD\TASKNAME\Tasklog.txt, Windows 2003, QlikView Distribution Service, 11
+    DS, C:\Documents and Settings\All Users\Application Data\QlikTech\Publisher\QlikViewDistributionService\1\Log, Tasklog.txt, Windows 2003, QlikView Publisher Distribution Service, 9
+    DS, C:\ProgramData\QlikTech\DistributionService\1\Log, YYYYMMDD\TASKNAME\Tasklog.txt, Windows 2008, QlikView Distribution Service, 10
+    DS, C:\ProgramData\QlikTech\DistributionService\1\Log, YYYYMMDD\TASKNAME\Tasklog.txt, Windows 2008, QlikView Distribution Service, 11
+    DS, C:\ProgramData\QlikTech\DistributionService\1\Log, YYYYMMDD\TASKNAME\Tasklog.txt, Windows 7, QlikView Distribution Service, 10
+    DS, C:\ProgramData\QlikTech\DistributionService\1\Log, YYYYMMDD\TASKNAME\Tasklog.txt, Windows 7, QlikView Distribution Service, 11
+    DS, C:\ProgramData\QlikTech\Publisher\Qlikview Distribution Service\1\Log, Tasklog.txt, Windows 2008, QlikView Publisher Distribution Service, 9
+    DSC, C:\Documents and Settings\All Users\Application Data\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 2003, QlikView Directory Services Connector Service, 10
+    DSC, C:\Documents and Settings\All Users\Application Data\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 2003, QlikView Directory Services Connector Service, 11
+    DSC, C:\Documents and Settings\All Users\Application Data\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 2003, QlikView Publisher Directory Services Connector Service, 9
+    DSC, C:\Documents and Settings\All Users\Application Data\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.xml, Windows 2003, QlikView Publisher Directory Services Connector Service, 8
+    DSC, C:\ProgramData\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 2008, QlikView Directory Services Connector Service, 10
+    DSC, C:\ProgramData\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 2008, QlikView Directory Services Connector Service, 11
+    DSC, C:\ProgramData\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 7, QlikView Directory Services Connector Service, 10
+    DSC, C:\ProgramData\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 7, QlikView Directory Services Connector Service, 11
+    DSC, C:\ProgramData\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.txt, Windows 2008, QlikView Publisher Directory Services Connector Service, 9
+    DSC, C:\ProgramData\QlikTech\DirectoryServiceConnector\Log, YYYYMMDD.xml, Windows 2008, QlikView Publisher Directory Services Connector Service, 8
+    Plugin, C:\Documents and Settings\USER_NAME\My Documents, ExtendedLogging.txt, Windows XP, QlikView Plugin Client, 8 & 9
+    Plugin, C:\Documents and Settings\USER_NAME\My Documents, ExtendedLogging.txt, Windows XP, QlikView Plugin Client, 10
+    Plugin, C:\Users\USER_NAME\Documents, ExtendedLogging.txt, Windows 7, QlikView Plugin Client, 8 & 9
+    Plugin, C:\Users\USER_NAME\Documents, ExtendedLogging.txt, Windows 7, QlikView Plugin Client, 10
+    Plugin, C:\Users\USER_NAME\Documents, ExtendedLogging.txt, Windows 7, QlikView Plugin Client, 11
+    QMS, C:\Documents and Settings\All Users\Application Data\QlikTech\ManagementService\Log, YYYYMMDD.txt, Windows 2003, QlikView Management Service, 10
+    QMS, C:\ProgramData\QlikTech\ManagementService\Log, YYYYMMDD.txt, Windows 7, QlikView Management Service, 10
+    QMS, C:\ProgramData\QlikTech\ManagementService\Log, YYYYMMDD.txt, Windows 7, QlikView Management Service, 11
+    QMS, C:\Documents and Settings\All Users\Application Data\QlikTech\QlikViewManagementService\Log, YYYYMMDD.txt, Windows 2003, QlikView Management Service, 9
+    QMS, C:\ProgramData\QlikTech\ManagementService\Log, YYYYMMDD.txt, Windows 2008, QlikView Management Service, 9
+    QMS, C:\ProgramData\QlikTech\QlikViewManagementService\Log, YYYYMMDD.txt, Windows 2008, QlikView Management Service, 9
+    QVPR, C:\Documents and Settings\All Users\Application Data\QlikTech\ManagementService\QVPR, , Windows 2003, QlikView XML Repository, 10
+    QVPR, C:\Documents and Settings\All Users\Application Data\QlikTech\ManagementService\QVPR, , Windows 2003, QlikView XML Repository, 10
+    QVPR, C:\Program Data\QlikTech\ManagementService\QVPR, , Windows 7, QlikView XML Repository, 10
+    QVPR, C:\Program Data\QlikTech\ManagementService\QVPR, , Windows 7, QlikView XML Repository, 11
+    QVPR, C:\Documents and Settings\All Users\Application Data\QlikTech\Publisher\CommandCenter\QVPR, , Windows 2003, QlikView Publisher XML Repository, 8 & 9
+    QVPR, C:\ProgramData\QlikTech\ManagementService\QVPR, , Windows 2008, QlikView XML Repository, 10
+    QVPR, C:\ProgramData\QlikTech\ManagementService\QVPR, , Windows 2008, QlikView XML Repository, 11
+    QVPR, C:\ProgramData\QlikTech\Publisher\CommandCenter\QVPR, , Windows 2008, QlikView Publisher XML Repository, 8 & 9
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Events__.log, Windows 2003, QlikView Server, 8 & 9
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Events__.log, Windows 2003, QlikView Server, 10
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Events__.log, Windows 2003, QlikView Server, 11
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Performance__.log, Windows 2003, QlikView Server, 8 & 9
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Performance__.log, Windows 2003, QlikView Server, 10
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Performance__.log, Windows 2003, QlikView Server, 11
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Sessions__.log, Windows 2003, QlikView Server, 8 & 9
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Sessions__.log, Windows 2003, QlikView Server, 10
+    QVS, C:\Documents and Settings\All Users\Application Data\QlikTech\Qvs, Sessions__.log, Windows 2003, QlikView Server, 11
+    QVS, C:\ProgramData\QlikTech\Qvs, Events__.log, Windows 7, QlikView Server, 8 & 9
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Events__.log, Windows 7, QlikView Server, 10
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Events__.log, Windows 7, QlikView Server, 11
+    QVS, C:\ProgramData\QlikTech\Qvs, Events__.log, Windows 2008, QlikView Server, 8 & 9
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Events__.log, Windows 2008, QlikView Server, 10
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Events__.log, Windows 2008, QlikView Server, 11
+    QVS, C:\ProgramData\QlikTech\Qvs, Performance__.log, Windows 7, QlikView Server, 8 & 9
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Performance__.log, Windows 7, QlikView Server, 10
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Performance__.log, Windows 7, QlikView Server, 11
+    QVS, C:\ProgramData\QlikTech\Qvs, Performance__.log, Windows 2008, QlikView Server, 8 & 9
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Performance__.log, Windows 2008, QlikView Server, 10
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Performance__.log, Windows 2008, QlikView Server, 11
+    QVS, C:\ProgramData\QlikTech\Qvs, Sessions__.log, Windows 7, QlikView Server, 8 & 9
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Sessions__.log, Windows 7, QlikView Server, 10
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Sessions__.log, Windows 7, QlikView Server, 11
+    QVS, C:\ProgramData\QlikTech\Qvs, Sessions__.log, Windows 2008, QlikView Server, 8 & 9
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Sessions__.log, Windows 2008, QlikView Server, 10
+    QVS, C:\ProgramData\QlikTech\QlikViewServer, Sessions__.log, Windows 2008, QlikView Server, 11
+    QWS, C:\Documents and Settings\All Users\Application Data\QlikTech\WebServer\Log, YYYYMMDD.txt, Windows 2003, QlikView Webserver Service, 10
+    QWS, C:\ProgramData\QlikTech\QvWebServer\Log, YYYYMMDD.txt, Windows 2008, QlikView Webserver Service, 9
+    QWS, C:\ProgramData\QlikTech\WebServer\Log, YYYYMMDD.txt, Windows 2008, QlikView Webserver Service, 10
+    QWS, C:\ProgramData\QlikTech\WebServer\Log, YYYYMMDD.txt, Windows 7, QlikView Webserver Service, 10
+    XS, C:\Documents and Settings\All Users\Application Data\QlikTech\Publisher\ExecutionService\Log, YYYYMMDD.xml, Windows 2003, QlikView Publisher Execution Service, 8
+    XS, C:\ProgramData\QlikTech\Publisher\ExecutionService\Log, YYYYMMDD.xml, Windows 2008, QlikView Publisher Execution Service, 8
+    QVSRefManual, C:\ProgramData\QlikTech\QlikView Server Documentation, QlikView Server Reference Manual.pdf, Windows 2008, QlikView Server, 11
+    QVSRefManual, C:\Documents and Settings\All Users\Application Data\QlikTech\QlikView Server Documentation, 'QlikView Server Reference Manual.pdf', Windows 2003, QlikView Server, 11
+    QVSRefManual, C:\ProgramData\QlikTech\QlikView Server Documentation, 'QlikView Server Reference Manual.pdf', Windows 7, QlikView Server, 11,
+];
+
+///$tab Master
+// Build the Main Table over, then drop foundation tables
+If FileSize('$(QVSPath)\Events_*.log') > 0 Then
+TRACE ============ Begin the creation of the master temp table;
+TRACE ============ by using data from the QVS Event logs;
+MasterTemp:
+Load *,
+RowNo() AS RowNum,
+Timestamp(EventsTimestamp, 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+Message AS Msg,
+'Events' AS TypeofLog,
+[Server Started Events] AS QVSStartedAt,
+Severity AS Sev,
+'QVSEvents' AS MsgSource,
+QVSClusterNodeEvents AS Node
+Resident Events
+Where Not IsNull(EventsTimestamp); 
+ENDIF; 
+
+If FileSize('$(QVSPath)\Events_*.log') > 0 Then
+TRACE ============ Begin the creation of the master temp table;
+TRACE ============ by using data from the QVS Event logs;
+Concatenate
+Load *,
+QVSRestart AS QVSStartedAt,
+QVSRestart AS Timestamp,
+'Restart' AS TypeofLog
+Resident QVSRestarts;
+EndIF;
+
+If FileSize('$(OSLogPath)\App_*.csv') > 0 Then
+TRACE ============ Load the Windows Event log data if exists;
+TRACE ============ Must have the App_*.csv in order to begin;
+Concatenate
+Load
+RowNo() AS RowNum,
+DateHourKey,
+Timestamp#(OSTimestamp, 'YYYY-MM-DD hh:mm:ss') AS Timestamp,
+OSMessage AS Msg,
+LogType AS TypeofLog,
+Level As Sev, 
+Source AS MsgSource,
+ProdServer AS Node,
+[Event ID] AS UserAgent
+Resident OSLogs
+Where Not IsNull(OSTimestamp);
+ENDIF; 
+
+//Performance - added 6/21
+If FileSize('$(QVSPath)\Performance_*.log') > 0 Then
+TRACE ============ Performance log data exists so concatenate;
+Concatenate 
+Load *,
+	PerformanceTimestamp AS Timestamp,
+    'Performance' AS TypeofLog,
+    'QVSPerformance' AS MsgSource,
+     ActiveDocSessions & ' - Active Doc Sessions & ' & [VMAllocated(MB)] & 'mb VM Alloc' AS Msg,
+     [Server Started] AS QVSStartedAt,
+     QVSClusterNodePerformance AS Node
+Resident Performance;
+ENDIF;
+
+If FileSize('$(WebServiceLogPath)\*.txt') > 0 Then
+TRACE ============ Webservice log data exists so concatenate;
+Concatenate
+Load *,
+RowNo() AS RowNum,
+//DateHourKey,
+WSTime AS Timestamp,
+WSText AS Msg,
+'Webserver' AS TypeofLog,
+WSLogType AS Sev,
+'Webserver' AS MsgSource,
+WebSvcNode AS Node
+Resident WebService
+Where Not IsNull(WSTime);
+ENDIF;
+
+If FileSize('$(IISLogPath)\u_ex*.log') > 0 Then
+TRACE ============ IIS logs exist so concatenate;
+Concatenate
+LOAD
+RowNo() AS RowNum,
+DateHourKey,
+IISTime AS Timestamp,
+[cs-uri-stem] AS Msg,
+[cs-method] AS IIScsmethod,
+[cs-uri-query] AS IIScsuriquery, 
+[s-port] AS IISsport,
+[c-ip] AS IIScip,
+'IIS' AS TypeofLog,
+[sc-status] AS Sev,
+'IIS' AS MsgSource,
+IISNode AS Node,
+[time-taken]/1000 AS TimeTaken,
+[cs(User-Agent)] AS UserAgent
+Resident IIS
+Where Not IsNull(IISTime);
+ENDIF;
+
+If FileSize('$(HTTPLogPath)\httperr*.log') > 0 Then
+TRACE ============ HTTP logs exist so concatenate;
+Concatenate
+LOAD
+RowNo() AS RowNum,
+DateHourKey,
+HTTPTime AS Timestamp,
+[c-ip] AS IIScip,
+[c-port] AS IIScport,
+[s-ip] AS IISsip,
+[s-port] AS IISsport,
+[cs-version] AS IIScsversion,
+[cs-method] AS IIScsmethod,
+[cs-uri] AS IIScsuriquery,
+[sc-status] AS IISscstatus,
+[sc-status] AS Sev,
+[s-siteid] AS IISssiteid,
+[s-reason] AS IISsreason,
+[s-reason] AS Msg,
+[s-queuename] AS IISsqueuename,
+'HTTPERR' AS TypeofLog,
+'HTTPERR' AS MsgSource, 
+HTTPNode AS Node
+Resident HTTPERR;
+ENDIF;
+
+If FileSize('$(DSCLogPath)\*.txt') > 0 Then
+TRACE ============ DSC logs exist, so concatenate;
+Concatenate
+LOAD *,
+RowNo() AS RowNum,
+DSCTimestamp AS Timestamp,
+DSCMessage AS Msg,
+'DSC' AS TypeofLog,
+DSCErrorType AS Sev,
+'DSC' AS MsgSource,
+DSCNode AS Node
+Resident DirectorySvcConnector
+Where Not IsNull(DSCTimestamp);
+ENDIF;
+
+If FileSize('$(ManagementLogPath)\*.txt') > 0 Then
+TRACE ============ QMS logs exist, so concatenate;
+Concatenate
+Load *,
+RowNo() AS RowNum,
+MgmtTimestamp AS Timestamp,
+MCMessage AS Msg,
+'QMS' AS TypeofLog,
+ErrorType AS Sev,
+'QMS' AS MsgSource,
+MGMTNode As Node
+Resident MGMT
+/*Where Not IsNull(MgmtTimestamp)*/;
+ENDIF;
+
+If FileSize('$(QVSPath)\Sessions_*.log') > 0 Then
+TRACE ============ QVS Session logs exist, so concatenate;
+Concatenate
+Load *,
+RowNo() AS RowNum,
+SessionsTime AS Timestamp,
+'Session' AS TypeofLog, 
+'QVSSession' As MsgSource,
+[Exit Reason] AS Msg,
+QVSClusterNodeSession AS Node
+Resident Sessions
+Where Not IsNull(SessionsTime);
+ENDIF;
+
+If FileSize('$(QVSPath)\Audit_*.log') > 0 AND FileSize('$(QVSPath)\Sessions_*.log') > 0 Then
+TRACE ============ QVS Audit logs exist, so concatenate;
+Concatenate
+LOAD*,
+'Audit' AS TypeofLog,
+'Audit' AS MsgSource,
+AuthenticatedUser AS UserAgent,
+RowNo() AS RowNum,
+Type & '-' & Object & '-' & AuditMessage & SelValues AS Msg,
+ActionTimestamp AS Timestamp
+Resident AuditLog;
+ENDIF;
+
+///Publisher
+If FileSize('$(TaskLogIndexPath)\TaskLogIndex_*.xml') > 0 Then 
+TRACE ============ Pub TaskLogIndex exists so concatenate;
+Concatenate
+Load
+RowNo() AS RowNum,
+DateHourKey,
+'Task Started: ' & Text2 AS Msg,
+Sev2 AS Sev,
+StartedAt AS Timestamp,
+TaskFinishTime,
+'Pub' AS TypeofLog,
+'Pub' AS MsgSource
+Resident PubTemp
+Where Len(Text2) > 1; 
+ENDIF;
+
+TRACE ============ Load final Master table from temp;
+Master:
+Load *, 
+IF(TypeofLog = 'Audit', RGB(42,166,8),
+IF(TypeofLog = 'DSC', RGB(0,205,115),
+IF(TypeofLog = 'Events', RGB(150,237,137),
+IF(TypeofLog = 'HTTPERR', RGB(44,186,234),
+If(TypeofLog = 'IIS', RGB(85,221,255),
+IF(TypeofLog = 'Performance', RGB(170,215,217),
+IF(TypeofLog = 'Pub' , RGB(192,170,192),
+IF(TypeofLog = 'QMS', RGB(255,127,0),
+IF(TypeofLog = 'Session', RGB(230,159,75),
+IF(TypeofLog = 'Webserver', RGB(255,200,135),
+IF(TypeofLog = 'Windows - App', RGB(255,227,0),
+IF(TypeofLog = 'Windows - Sec', RGB(255,245,141),
+IF(TypeofLog = 'Windows - Sys', RGB(255,100,85),
+IF(TypeofLog = 'Restart', RGB(0,0,0),''
+				)))))))))))))) AS 'Color1',
+				
+IF(TypeofLog = 'Pub' AND Sev = 'Failed' OR Sev = 'Error', LightRed()/*RGB(255,69,46)*/,
+IF(Sev = 'Warning', RGB(212,104,18),
+IF(TypeofLog = 'Audit', RGB(42,166,8),
+IF(TypeofLog = 'DSC', RGB(0,205,115),
+IF(TypeofLog = 'Events', RGB(150,237,137),
+IF(TypeofLog = 'HTTPERR', RGB(44,186,234),
+If(TypeofLog = 'IIS', RGB(85,221,255),
+IF(TypeofLog = 'Performance', RGB(170,215,217),
+IF(TypeofLog = 'Pub' , RGB(192,170,192),
+IF(TypeofLog = 'QMS', RGB(255,127,0),
+IF(TypeofLog = 'Session', RGB(230,159,75),
+IF(TypeofLog = 'Webserver', RGB(255,200,135),
+IF(TypeofLog = 'Windows - App', RGB(255,227,0),
+IF(TypeofLog = 'Windows - Sec', RGB(255,245,141),
+IF(TypeofLog = 'Windows - Sys', RGB(255,100,85), 
+IF(TypeofLog = 'Restart', RGB(0,0,0),''
+				)))))))))))))))) AS 'Color2', 
+
+If(TypeofLog = 'Restart', White()) AS 'Color3'
+Resident MasterTemp
+Order by TypeofLog asc;
+
+Let c1 =  FieldValue('Color1', 1);
+Let c2 =  FieldValue('Color1', 2);
+Let c3 =  FieldValue('Color1', 3);
+Let c4 =  FieldValue('Color1', 4);
+Let c5 =  FieldValue('Color1', 5);
+Let c6 =  FieldValue('Color1', 6);
+Let c7 =  FieldValue('Color1', 7);
+Let c8 =  FieldValue('Color1', 8);
+Let c9 =  FieldValue('Color1', 9);
+Let c10 = FieldValue('Color1', 10);
+Let c11 = FieldValue('Color1', 11);
+Let c12 = FieldValue('Color1', 12);
+Let c13 = FieldValue('Color1', 13);
+
+
+TRACE ============ Cleanup;
+ErrorMode = 0
+IF Left(QlikViewVersion(), 2) = 11 Then 
+Drop Field StartedAt from TaskResults;
+ENDIF;
+Drop Table MasterTemp;
+Drop Table PubTemp;
+
+
+
+Drop Table Sessions;
+Drop Table Events;
+Drop Table QVSRestarts;
+DROP Table Performance; 
+Drop Table AuditLog;
+Drop Table UserSummary;
+Drop Table DirectorySvcConnector;
+Drop Table MGMT;
+Drop Table WebService;
+Drop Table IIS;
+DROP Table HTTPERR;
+//Drop Table ConcurrentSessions;
+Drop Table DocUseCount;
+Drop Table SAPDummy;
+Drop Table SalesforceDummy;
+Drop Table OSLogs;
+DROP Table ConcurrentUsersTMP;
+DROP Table PDummy;
+DROP Table SDummy;
+DROP Table ADummy;
+DROP Table WebDummy;
+DROP Table MGMTDummy;
+DROP Table MGMTAuditDummy;
+DROP Table DSCDummy;
+DROP Table ConcDummy;
+DROP Table OSDummy;
+DROP Table IISDummy;
+DROP FIELD 	[%DocUserKey];
+DROP FIELD 	[ActionTimestamp];
+DROP FIELD 	[Date and Time];
+DROP FIELD 	[DocFolder];
+DROP FIELD 	[DocFullPath];
+DROP FIELD 	[DocUser_Key];
+DROP FIELD 	[Event ID];
+DROP FIELD 	[LanID_2];
+DROP FIELD 	[Level];
+DROP FIELD 	[OSDate];
+DROP FIELD 	[OSHour];
+DROP FIELD 	[OSMessage];
+DROP FIELD 	[OSMonth];
+DROP FIELD 	[OSTimestamp];
+DROP FIELD 	[OSYear];
+DROP FIELD 	[PerformanceCalls];
+DROP FIELD 	[PerformanceSelections];
+DROP FIELD 	[PerformanceTime];
+DROP FIELD 	[ProdServer];
+DROP FIELD 	[QVSClusterNodeEvents];
+DROP FIELD 	[QVSClusterNodePerf];
+DROP FIELD 	[QVSClusterNodeSession];
+DROP FIELD 	[Server Started Events];
+DROP FIELD 	[Server Started Sessions];
+DROP FIELD 	[SessionDuration];
+DROP FIELD 	[SessionEnd];
+DROP FIELD 	[SessionStart];
+DROP FIELD 	[SessionsTime];
+DROP FIELD 	[SessionsTimestamp];
+
+///$tab Scalabiility Center Addition
+///$tab HvP-Aggregator
+//*********************************************//
+//****								       ****//
+//****    Create Aggregated information    ****//
+//****    Information is not scrambled!    ****//
+//****								  	   ****//
+//****	  Author: Hampus von Post (hps)    ****//
+//****	  Date: 2012-08-31			  	   ****//
+//****								  	   ****//
+//*********************************************//
+
+//The Following information will be aggregated
+//
+//Usage patterns:
+//* Average Session Length [DONE - AvgSessionDuration]
+//- Sessions per Document [Not implemented]
+//* Number of Sessions [DONE - NbrOfSessions]
+//- Typical Qliks [Not Implemented - Depends on whether audit log is activated] 
+//* Average Qliks per session [DONE - QliksPerSession]
+//- Average Qliks per Session per Document [Not implemented]
+//* Exit Reason [DONE - ExitReason & ExitCount]
+//- QV Version [Not implemented]
+//- QV Licenses Used [Not implemented]
+//* Browser [DONE - Browser & BrowserCount]
+
+//Server analysis:
+//- Jobs Run 
+//- Jobs Failed
+//* Server Errors [DONE - SeverityLevel + SeverityCount]
+//* Server Warnings [DONE - SeverityLevel + SeverityCount]
+//* Top Server Errors + Count [DONE - ErrorCount + ErrorMessage]
+//* Top Server Warning + Count [DONE - WarningCount + WarningMessage]
+
+//***** Average Session Length *****//
+
+trace Generating Aggregations!;
+
+AvgAggregations:
+NoConcatenate
+load
+	 1 as marker,
+	 [Session Duration],
+	 [Exit Reason],
+	 [SessionSelections],
+	 [Client Build Version],
+	 [Client Type2],
+	 [Session Start],
+	 [Cal Type]
+Resident Master where [Session Duration] > 0;
+
+Aggregations:
+NoConcatenate
+load
+	*,
+	TempSelections/NbrOfSessions as QliksPerSession
+	;
+load
+	count([Session Duration]) as NbrOfSessions,
+	avg([Session Duration]) as AvgSessionDuration,
+	sum([SessionSelections]) as TempSelections
+Resident AvgAggregations group by marker;
+
+TempExitReason:
+Concatenate(Aggregations)
+load
+	[Exit Reason] as ExitReason,
+	count([Exit Reason]) as ExitCount
+Resident AvgAggregations group by [Exit Reason];
+
+TempBrowser:
+Concatenate(Aggregations)
+load
+	[Client Type2] as Browser,
+	count([Client Type2]) as BrowserCount
+Resident AvgAggregations group by [Client Type2];
+
+TempSessionsByHour:
+Concatenate(Aggregations)
+load
+	 hour([Session Start]) as SessionHour,
+	 count([Session Start]) as SessionsPerHour
+Resident AvgAggregations group by hour([Session Start]);
+
+//***** Get all Server Warnings and Errors ****
+TempServerNotifications:
+NoConcatenate
+load
+	Sev,
+	Message
+Resident Master where Sev='Error' or Sev='Warning';
+
+ErrorWarningCount:
+Concatenate(Aggregations)
+load
+	Sev as SeverityLevel,
+	count(Sev) as SeverityCount
+Resident TempServerNotifications group by Sev;
+
+//***** Generate interim frequency of errors ****
+ServerErrorMessages:
+NoConcatenate
+load
+	count(Message) as ErrorCount,
+	Message as ErrorMessage,
+	'Error' as Sev
+Resident TempServerNotifications where Sev='Error' group by Message;
+
+ServerErrorFirst:
+Concatenate(Aggregations)
+first 3   //Only get the three most common errors
+load
+	 ErrorCount,
+	 ErrorMessage
+Resident ServerErrorMessages order by ErrorCount desc;
+
+drop table ServerErrorMessages;
+
+//***** Generate interim frequency of warnings ****
+ServerWarningMessages:
+NoConcatenate
+load
+	count(Message) as WarningCount,
+	Message as WarningMessage
+Resident TempServerNotifications where Sev='Warning' group by Message;
+
+ServerWarningMessages:
+Concatenate(Aggregations)
+first 3   //Only get the three most common errors
+load
+	 WarningCount,
+	 WarningMessage
+Resident ServerWarningMessages order by WarningCount desc;
+
+drop table ServerWarningMessages;
+
+//** Get Client Build Version as well as Licenses used ****
+Versions:
+Concatenate(Aggregations)
+load distinct
+	 [Client Build Version] as QlikViewVersion
+Resident Master;
+
+//** Get Licenses used **//
+TempLicenses:
+Concatenate(Aggregations)
+load
+	count([Cal Type]) as LicenseCount,
+	[Cal Type] as License
+Resident AvgAggregations group by [Cal Type];
+	 
+trace Dropping temporary tables/fields!;
+
+drop table TempServerNotifications;
+drop field TempSelections;
+drop table AvgAggregations;
+///$tab HvP-Exports
+//***************************************//
+//****								 ****//
+//****    Generate output for the    ****//
+//****	  Information Extractor 	 ****//
+//****								 ****//
+//***************************************//
+
+//**** Export all QlikView nodes empty or not ****//
+Exports:
+Concatenate(Aggregations)
+load
+	'$(QVSClusterNode1)' as QVSNode1,
+	'$(QVSClusterNode2)' as QVSNode2,
+	'$(QVSClusterNode3)' as QVSNode3,
+	'$(QVSClusterNode4)' as QVSNode4,
+	'$(QVSClusterNode5)' as QVSNode5,
+	'$(WebSvcNode1)' as WWWNode1,
+	'$(WebSvcNode2)' as WWWNode2,
+	'$(WebSvcNode2)' as WWWNode3,
+	'$(QDSNode1)' as QDSNode1,
+	'$(QDSNode2)' as QDSNode2,
+	'$(MGMTNode1)' as MGMTNode1,
+	'$(MGMTNode2)' as MGMTNode2,
+	1 as ServerFlag
+autogenerate(1);
+
+Documents:
+Concatenate(Aggregations)
+load 
+	DocumentPath
+resident Master where len(DocumentPath)>0 ;
+
+//**** Store and drop the Aggregated data ****
+store Aggregations into Aggregations.qvd (qvd);
+drop table Aggregations;
+
+

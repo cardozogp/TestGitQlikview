@@ -1,0 +1,2 @@
+﻿QVDFileName;QVTableName;QVDSourcePath;QVDSourceContainerName;RelativePath;QVDTag;QVDIndexStorageName;QVDTimestamp;QVDFields;QVDTableCreator;QVDNbrRecords;QVDNbrFields
+Orders.qvd;Orders;E:\QDF\1.Example\2.QVD;Example;2.QVD\Orders.qvd;,Level3,OrderData,;Example;42320.600532407;,OrderID,CustomerID,EmployeeID,OrderDate,RequiredDate,ShippedDate,ShipVia,Freight,ShipName,ShipAddress,ShipCity,ShipRegion,ShipPostalCode,ShipCountry,;E:\QDF\1.Example\1.Application\1.QVD-Generator-example\QVD-Generator-Example.qvw;830;14

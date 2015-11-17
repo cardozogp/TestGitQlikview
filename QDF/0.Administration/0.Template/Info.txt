@@ -1,0 +1,9 @@
+//  ____________________________________________________________
+// |      Deployment Framework Path Info txt                   |
+// | Contains information folder purpose and base variable     |
+// |  All path are based on vG.BasePath                        |
+// |___________________________________________________________|
+
+// Store to keep templates, like the container template that is used when generating new containers
+
+Global Variable = vG.TemplatePath

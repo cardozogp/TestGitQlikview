@@ -1,0 +1,250 @@
+﻿///$tab Main
+// Developed by Luis Cortizo
+// DISCLAIMER: The app provided is only for evaluation of variable extraction of a .qvw file. 
+// Neither the author of the code, nor Qlik can be held responsible for any damages arising out of 
+// using this software in any manner. Please use the application at your own risk.
+
+//Deployment Framework initialization
+//Development was made with the idea of placing this file on the Shared Container of the DEV environment.
+$(Must_Include=..\3.include\1.basevariable\1.init.qvs);
+$(Must_Include=$(vG.LocalePath)5.spa.qvs);
+///$tab CompleteFramework
+//This tab will only be executed when the whole Framework option is checked and Single application unchecked
+If vL.Framework = 1 and (vL.Framework * vL.SingleApplication) = 0 then
+	
+//Use of the DoDir Sub to list every .qvw file on the Framework starting the scan on the Root of the Framework
+call DoDir ('$(vG.RootPath)\*.qvw');
+
+//Only the Container Name tag and the Application path inside the container is kept on memory
+//To achieve that, several string functions have been used
+QlikViewApplications:
+LOAD 
+	right(left(DoDirContainerPath,index(DoDirContainerPath, '\', 1)-1), len(left(DoDirContainerPath,index(DoDirContainerPath, '\', 1)-1))-
+																			index(left(DoDirContainerPath,index(DoDirContainerPath, '\', 1)-1), '.', 1)) as ContainerName,
+	right(DoDirContainerPath, len(DoDirContainerPath)-len(left(DoDirContainerPath, (index(DoDirContainerPath, '1.Application\', -1)+len('1.Application\'))))+1) as ApplicationPath
+Resident DoDirFileList
+where not WildMatch(right(DoDirContainerPath, len(DoDirContainerPath)-len(left(DoDirContainerPath, (index(DoDirContainerPath, '1.Application\', -1)+len('1.Application\'))))+1), '*VariableEditor.qvw')
+and not WildMatch (left(DoDirContainerPath,index(DoDirContainerPath, '\', 1)-1), '0.Administration', '99.Shared_Folders')
+Order By DoDirContainerPath asc;
+
+//The complete DoDir table is dropped as it's no longer needed
+Drop table DoDirFileList;
+
+//For every row on the table the procedure will be as follows:
+//1 - If it's the first container to load a call to the global variables is made. Variables are extracted and stored. A backup is made erasing any previous backups older than 14 days
+//2 - In case the next container is different than the previous one the process is the same as in point 1. In case the next container as the one being loaded is the same, another loop is made
+//    in order to concatenate the information on a single table for every application in the container
+
+for i=0 to NoOfRows('QlikViewApplications')-1
+	
+	LET vL.NextContainerAnalyzed = Peek('ContainerName', i+1, 'QlikViewApplications');
+	LET vL.ContainerAnalyzed = Peek('ContainerName', i, 'QlikViewApplications');
+	LET vL.ApplicationName = Peek('ApplicationPath', i, 'QlikViewApplications');
+	
+	//Link to the global variables of the container entered
+	If vL.PreviousContainerAnalyzed <> vL.ContainerAnalyzed then 
+		Call LCGV('$(vL.ContainerAnalyzed)');
+	ENDIF
+	
+	CustomVariables:
+	LOAD
+		Name as VariableName,
+	    RawValue as VariableValue,
+	    ''  as Comments,
+	    '' as Priority
+	FROM $(vG.$(vL.ContainerAnalyzed)ApplicationPath)$(vL.ApplicationName) (XmlSimple, Table is [DocumentSummary/VariableDescription])
+	where IsConfig = 'false' and IsReserved = 'false' and not Wildmatch(Name, 'vG.*') and Name<>'vL.SingleFolder_tmp' and Name<>'vL.ContainerName_tmp';
+	
+	If vL.NextContainerAnalyzed <> vL.ContainerAnalyzed then 
+
+		//Check the previous existence of the Custom.Variables file
+		call vL.FileExist('$(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv');
+	
+		If vL.FileExist = 'true' then
+			LET vL.BackupTimestamp = Replace(Replace(Replace(Now(), ' ', '_'), ':', '_'), '/', '');
+			//In case it exists and this is the first execution a backup folder (CustomVariablesBackup) is created in order to store the backups
+			call CreateFolder ('$(vG.$(vL.ContainerAnalyzed)BaseVariablePath)\99.CustomVariablesBackup'); 
+			//The file Custom.Variables is copied to the backup folder adding the execution time
+			EXECUTE cmd /c copy $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)99.CustomVariablesBackup\Custom.Variables_$(vL.BackupTimestamp).csv;
+			//The Custom.Variables files older than 14 days are erase of the backup folder
+			EXECUTE cmd /c forfiles -p "$(vG.$(vL.ContainerAnalyzed)BaseVariablePath)\99.CustomVariablesBackup" /s /m Custom.Variables*.csv /d -14 /c "cmd del /q @file";
+		ENDIF
+
+		//Update of the Custom.Variables.csv file. This file is read by the Variable Editor. In case everything has executed OK the migration has ended.
+		
+			If vL.UpdateVariables = 1 then
+	
+				CustomVariables:
+				LOAD Distinct
+					VariableName, 
+     				VariableValue, 
+     				Comments, 
+     				Priority
+				FROM $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv (txt, utf8, embedded labels, delimiter is ',', msq);
+		
+			ENDIF
+		
+		store * from CustomVariables into $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv (txt, codepage is 1252, no labels, delimiter is ',', msq);
+	
+		//Loop Cleanup
+		SET vL.ApplicationName = ;
+		SET vG.$(vL.ContainerAnalyzed)ApplicationPath= ;
+		SET vG.$(vL.ContainerAnalyzed)BasePath= ;
+		SET vG.$(vL.ContainerAnalyzed)BaseVariablePath= ;
+		SET vG.$(vL.ContainerAnalyzed)ColorSchemePath= ;
+		SET vG.$(vL.ContainerAnalyzed)ConfigPath= ;
+		SET vG.$(vL.ContainerAnalyzed)ConnStringPath= ;
+		SET vG.$(vL.ContainerAnalyzed)CustomPath= ;
+		SET vG.$(vL.ContainerAnalyzed)ExportPath= ;
+		SET vG.$(vL.ContainerAnalyzed)ImportPath= ;
+		SET vG.$(vL.ContainerAnalyzed)IncludePath= ;
+		SET vG.$(vL.ContainerAnalyzed)LocalePath= ;
+		SET vG.$(vL.ContainerAnalyzed)MartPath= ;
+		SET vG.$(vL.ContainerAnalyzed)QVDPath= ;
+		SET vG.$(vL.ContainerAnalyzed)ScriptPath= ;
+		SET vG.$(vL.ContainerAnalyzed)SubPath= ;
+		SET vL.FileExist= ;
+		SET vL.BackupTimestamp= ;	
+
+		DROP TABLE CustomVariables;
+
+	ENDIF
+	
+	//Container already analyzed
+	LET vL.PreviousContainerAnalyzed = vL.ContainerAnalyzed;
+	
+NEXT
+
+//Final Cleanup
+SET vL.NextContainerAnalyzed= ;
+SET vL.PreviousContainerAnalyzed= ;
+SET i= ;
+DROP TABLE QlikViewApplications;
+
+ENDIF
+///$tab SingleApplication
+//This tab will only be executed when Single application option is checked and the whole Framework unchecked
+If vL.SingleApplication = 1 and (vL.Framework * vL.SingleApplication) = 0 then
+
+//The error values to check the data entry are initialized to 0 by default. In case a parameter is missing its value will be 1
+SET vL.ContainerErrorFlag = 1;
+SET vL.ApplicationErrorFlag = 1;
+
+//Check of the data entry for the container name
+If len(trim(vL.ContainerAnalyzed))=0 then
+	trace "Error. No container name";
+	SET vL.ContainerErrorFlag = 0;
+ENDIF
+
+//Check of the data entry for the application name
+If len(trim(vL.DocumentName))=0 then
+	trace "Error. No application name";
+	SET vL.ApplicationErrorFlag = 0;
+ENDIF
+
+//In case any parameter is missing the script ends here
+If $(vL.ContainerErrorFlag) * $(vL.ApplicationErrorFlag) = 0 then 
+	EXIT Script;
+ENDIF
+
+//In case the application does not have a .qvw file extension, the extension is added on the script
+If right(vL.DocumentName, 4)<>'.qvw' then 
+	LET vL.Name = vL.DocumentName;
+	LET vL.Extension = '.qvw';
+	Let vL.ApplicationName = vL.Name&vL.Extension;
+ELSE 
+	Let vL.ApplicationName = vL.DocumentName;
+ENDIF
+
+//Link to the global variables of the container entered
+Call LCGV('$(vL.ContainerAnalyzed)');
+
+//Variable values extracion of the application entered placed on the 1.Application folder
+//The extract process is made loading the XML variable description table inside the .qvw file.
+//Every variable except the the configuration or reserved ones that does not contain vG in its name will be loaded
+//24-Sept-2015: Two more conditions have been added to resolve temp error.
+CustomVariables:
+LOAD
+	Name as VariableName,
+//    IsConfig as #ConfigVariable,
+//    IsReserved as #ReservedVariable,
+    RawValue as VariableValue,
+    ''  as Comments,
+    '' as Priority
+//    %Key_DocumentSummary_3E3ED09C8BC69525    // Key to parent table: DocumentSummary
+FROM $(vG.$(vL.ContainerAnalyzed)ApplicationPath)$(vL.ApplicationName) (XmlSimple, Table is [DocumentSummary/VariableDescription])
+where IsConfig = 'false' and IsReserved = 'false' and not Wildmatch(Name, 'vG.*') and Name<>'vL.SingleFolder_tmp' and Name<>'vL.ContainerName_tmp';
+
+//Check the previous existence of the Custom.Variables file
+call vL.FileExist('$(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv');
+
+If vL.FileExist = 'true' then
+
+	If vL.UpdateVariables = 1 then
+	
+		CustomVariables:
+		LOAD Distinct
+			VariableName, 
+     		VariableValue, 
+     		Comments, 
+     		Priority
+		FROM $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv (txt, utf8, embedded labels, delimiter is ',', msq);
+		
+	ENDIF
+
+
+	LET vL.BackupTimestamp = Replace(Replace(Replace(Now(), ' ', '_'), ':', '_'), '/', '');
+	//In case it exists and this is the first execution a backup folder (CustomVariablesBackup) is created in order to store the backups
+	call CreateFolder ('$(vG.$(vL.ContainerAnalyzed)BaseVariablePath)\99.CustomVariablesBackup'); 
+	//The file Custom.Variables is copied to the backup folder adding the execution time
+	EXECUTE cmd /c copy $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)99.CustomVariablesBackup\Custom.Variables_$(vL.BackupTimestamp).csv;
+	//The Custom.Variables files older than 14 days are erase of the backup folder
+	EXECUTE cmd /c forfiles -p "$(vG.$(vL.ContainerAnalyzed)BaseVariablePath)\99.CustomVariablesBackup" /s /m Custom.Variables*.csv /d -14 /c "cmd del /q @file";
+	
+//	If vL.UpdateVariables = 1 then
+//	
+//		CustomVariables:
+//		LOAD 
+//			VariableName, 
+//     		VariableValue, 
+//     		Comments, 
+//     		Priority
+//		FROM $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv (txt, codepage is 1252, embedded labels, delimiter is ',', msq);
+//
+//	ENDIF
+
+//Update of the Custom.Variables.csv file. This file is read by the Variable Editor. In case everything has executed OK the migration has ended.
+store * from CustomVariables into $(vG.$(vL.ContainerAnalyzed)BaseVariablePath)Custom.Variables.csv (txt, codepage is 1252, no labels, delimiter is ',', msq);
+
+//Cleanup of temporary tables
+DROP Table CustomVariables;
+
+//Cleanup of temporary variables
+SET vL.Name = ;
+SET vL.Extension = ;
+SET vL.ApplicationName = ;
+SET vG.$(vL.ContainerAnalyzed)ApplicationPath= ;
+SET vG.$(vL.ContainerAnalyzed)BasePath= ;
+SET vG.$(vL.ContainerAnalyzed)BaseVariablePath= ;
+SET vG.$(vL.ContainerAnalyzed)ColorSchemePath= ;
+SET vG.$(vL.ContainerAnalyzed)ConfigPath= ;
+SET vG.$(vL.ContainerAnalyzed)ConnStringPath= ;
+SET vG.$(vL.ContainerAnalyzed)CustomPath= ;
+SET vG.$(vL.ContainerAnalyzed)ExportPath= ;
+SET vG.$(vL.ContainerAnalyzed)ImportPath= ;
+SET vG.$(vL.ContainerAnalyzed)IncludePath= ;
+SET vG.$(vL.ContainerAnalyzed)LocalePath= ;
+SET vG.$(vL.ContainerAnalyzed)MartPath= ;
+SET vG.$(vL.ContainerAnalyzed)QVDPath= ;
+SET vG.$(vL.ContainerAnalyzed)ScriptPath= ;
+SET vG.$(vL.ContainerAnalyzed)SubPath= ;
+SET vL.FileExist= ;
+SET vL.BackupTimestamp= ;
+
+ENDIF
+///$tab Cleanup
+//Error control variables are deleted after the process
+SET vL.ApplicationErrorFlag = ;
+SET vL.ContainerErrorFlag = ;
+
+EXIT Script;
