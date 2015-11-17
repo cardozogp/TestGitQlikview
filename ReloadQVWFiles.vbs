@@ -1,5 +1,6 @@
 Dim fso, Qv
 ' create a global copy of the filesystem object
+' Kommentar
 
 Set fso = CreateObject("Scripting.FileSystemObject")
 Set Qv = CreateObject("QlikTech.QlikView")
