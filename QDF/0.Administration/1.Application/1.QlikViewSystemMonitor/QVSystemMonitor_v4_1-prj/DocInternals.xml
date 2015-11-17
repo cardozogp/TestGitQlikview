@@ -9,553 +9,37 @@
     <bool>false</bool>
     <bool>false</bool>
     <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
   </AlwaysLoose>
   <FieldSrcTables>
     <String>6</String>
-    <String>4</String>
+    <String>5</String>
+    <String>EDummy</String>
+    <String>IISDummy</String>
     <String>HTTPERRDummy</String>
-    <String>LogIndex</String>
-    <String>Time</String>
-    <String>Master</String>
+    <String>PDummy</String>
+    <String>QVSRDummy</String>
     <String>7</String>
-    <String>1</String>
-    <String>Master</String>
+    <String>5</String>
+    <String>EDummy</String>
+    <String>IISDummy</String>
+    <String>HTTPERRDummy</String>
+    <String>PDummy</String>
+    <String>QVSRDummy</String>
     <String>8</String>
     <String>1</String>
-    <String>Master</String>
+    <String>EDummy</String>
     <String>9</String>
     <String>1</String>
-    <String>Master</String>
+    <String>IISDummy</String>
     <String>10</String>
     <String>1</String>
-    <String>Master</String>
+    <String>HTTPERRDummy</String>
     <String>11</String>
     <String>1</String>
-    <String>Master</String>
+    <String>PDummy</String>
     <String>12</String>
     <String>1</String>
-    <String>Master</String>
-    <String>13</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>14</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>15</String>
-    <String>1</String>
-    <String>HTTPERRDummy</String>
-    <String>16</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>17</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>18</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>19</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>20</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>21</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>22</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>23</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>24</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>25</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>26</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>27</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>28</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>29</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>30</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>31</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>32</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>33</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>34</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>35</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>36</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>37</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>38</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>39</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>40</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>41</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>42</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>43</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>44</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>45</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>46</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>47</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>48</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>49</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>50</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>51</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>52</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>53</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>54</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>55</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>56</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>57</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>58</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>59</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>60</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>61</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>62</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>63</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>64</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>65</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>66</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>67</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>68</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>69</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>70</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>71</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>72</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>73</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>74</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>75</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>76</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>77</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>78</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>79</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>80</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>81</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>82</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>83</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>84</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>85</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>86</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>87</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>88</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>89</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>90</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>91</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>92</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>93</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>94</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>95</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>96</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>97</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>98</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>99</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>100</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>101</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>102</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>103</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>104</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>105</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>106</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>107</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>108</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>109</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>110</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>111</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>112</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>113</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>114</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>115</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>116</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>117</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>118</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>119</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>120</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>121</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>122</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>123</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>124</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>125</String>
-    <String>1</String>
-    <String>MaxDateIsland</String>
-    <String>126</String>
-    <String>1</String>
-    <String>MaxDateIsland</String>
-    <String>127</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>128</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>129</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>130</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>131</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>132</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>133</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>134</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>135</String>
-    <String>1</String>
-    <String>LogIndex</String>
-    <String>136</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>137</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>138</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>139</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>140</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>141</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>142</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>143</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>144</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>145</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>146</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>147</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>148</String>
-    <String>2</String>
-    <String>TaskResults</String>
-    <String>TaskFinalEntry</String>
-    <String>149</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>150</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>151</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>152</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>153</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>154</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>155</String>
-    <String>1</String>
-    <String>TaskResults</String>
-    <String>156</String>
-    <String>2</String>
-    <String>TaskResults</String>
-    <String>Aggregated_JobStats</String>
-    <String>157</String>
-    <String>1</String>
-    <String>Aggregated_JobStats</String>
-    <String>158</String>
-    <String>1</String>
-    <String>TaskFinalEntry</String>
-    <String>159</String>
-    <String>1</String>
-    <String>TaskFinalEntry</String>
-    <String>160</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>161</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>162</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>163</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>164</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>165</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>166</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>167</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>168</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>169</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>170</String>
-    <String>1</String>
-    <String>Time</String>
-    <String>171</String>
-    <String>1</String>
-    <String>LOG_LOCATIONS</String>
-    <String>172</String>
-    <String>1</String>
-    <String>LOG_LOCATIONS</String>
-    <String>173</String>
-    <String>1</String>
-    <String>LOG_LOCATIONS</String>
-    <String>174</String>
-    <String>1</String>
-    <String>LOG_LOCATIONS</String>
-    <String>175</String>
-    <String>1</String>
-    <String>LOG_LOCATIONS</String>
-    <String>176</String>
-    <String>1</String>
-    <String>LOG_LOCATIONS</String>
-    <String>177</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>178</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>179</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>180</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>181</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>182</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>183</String>
-    <String>1</String>
-    <String>Master</String>
-    <String>184</String>
-    <String>1</String>
-    <String>Master</String>
+    <String>QVSRDummy</String>
   </FieldSrcTables>
   <TableViewData>
     <Pos></Pos>
@@ -820,7 +304,7 @@
         <BookmarkFieldItem>
           <Def>
             <Name>Sev</Name>
-            <Type>PRESENT</Type>
+            <Type>NOT_PRESENT</Type>
           </Def>
           <Locked>false</Locked>
           <SelectInfo></SelectInfo>
@@ -864,7 +348,7 @@
       <ForAnnotations>false</ForAnnotations>
     </Bookmark>
   </Bookmarks>
-  <SavedByVersion>11.20.12235.0409</SavedByVersion>
+  <SavedByVersion>11.20.12742.0409</SavedByVersion>
   <ForceBackEndMacroExecution>false</ForceBackEndMacroExecution>
   <FieldTags>
     <ScriptBased>
@@ -873,9 +357,7 @@
         <FieldNames>
           <String>$Field</String>
           <String>$Table</String>
-          <String>DateHourKey</String>
-          <String>FinishedAt</String>
-          <String>JobDayKey</String>
+          <String>$Syn 1</String>
         </FieldNames>
       </FieldTagData>
       <FieldTagData>
@@ -887,6 +369,7 @@
           <String>$Fields</String>
           <String>$FieldNo</String>
           <String>$Info</String>
+          <String>$Syn 1</String>
         </FieldNames>
       </FieldTagData>
       <FieldTagData>
@@ -906,73 +389,13 @@
           <String>$Field</String>
           <String>$Table</String>
           <String>$Info</String>
-          <String>Severity</String>
+          <String>Timestamp</String>
+          <String>DateHourKey</String>
+          <String>EventDummy</String>
+          <String>IISDummy</String>
           <String>HTTPDummy</String>
-          <String>ServerExeType</String>
-          <String>ServerExeVersion</String>
-          <String>Exe Type</String>
-          <String>Exe Version</String>
-          <String>EntryType</String>
-          <String>QVSClusterNodePerformance</String>
-          <String>Sev</String>
-          <String>Node</String>
-          <String>SessionDocName</String>
-          <String>SessionExeType</String>
-          <String>SessionExeVersion</String>
-          <String>SessionID</String>
-          <String>UserID</String>
-          <String>DocumentPath</String>
-          <String>DocumentName</String>
-          <String>Document</String>
-          <String>QlikView User</String>
-          <String>Exit Reason</String>
-          <String>SessionRange</String>
-          <String>AuthenticatedUser</String>
-          <String>Identifying user</String>
-          <String>Client machine identification</String>
-          <String>Serial number</String>
-          <String>Client Type</String>
-          <String>Client Type2</String>
-          <String>Secure Protocol</String>
-          <String>Tunnel Protocol</String>
-          <String>Client Address</String>
-          <String>LanID</String>
-          <String>Cal Type</String>
-          <String>Cal Usage Count</String>
-          <String>WSLogType</String>
-          <String>WebSvcNode</String>
-          <String>ErrorType</String>
-          <String>MCMessage</String>
-          <String>MGMTNode</String>
-          <String>DSCErrorType</String>
-          <String>DSCMessage</String>
-          <String>DSCNode</String>
-          <String>LogID</String>
-          <String>Name</String>
-          <String>FullLogPath</String>
-          <String>DistributeTaskID</String>
-          <String>DistributeTaskIDTR</String>
-          <String>RunID</String>
-          <String>TaskManuallyAborted</String>
-          <String>PreviousRunHadErrors</String>
-          <String>InternalError</String>
-          <String>FinishedAt</String>
-          <String>MaxRunTime</String>
-          <String>HasWarnings</String>
-          <String>Status</String>
-          <String>JobStart</String>
-          <String>JobFinish</String>
-          <String>JobFinishDt</String>
-          <String>LogFinalEntryType</String>
-          <String>Text</String>
-          <String>TaskFinishTime</String>
-          <String>Acronym</String>
-          <String>Default Log Folder</String>
-          <String>Log File Name</String>
-          <String>Operating System</String>
-          <String>Service/Product</String>
-          <String>TypeofLog</String>
-          <String>MsgSource</String>
+          <String>PerfDummy</String>
+          <String>QVSRDummy</String>
         </FieldNames>
       </FieldTagData>
       <FieldTagData>
@@ -981,77 +404,13 @@
           <String>$Field</String>
           <String>$Table</String>
           <String>$Info</String>
+          <String>Timestamp</String>
           <String>DateHourKey</String>
-          <String>Severity</String>
-          <String>Message</String>
+          <String>EventDummy</String>
+          <String>IISDummy</String>
           <String>HTTPDummy</String>
-          <String>ServerExeType</String>
-          <String>ServerExeVersion</String>
-          <String>Exe Type</String>
-          <String>Exe Version</String>
-          <String>EntryType</String>
-          <String>QVSClusterNodePerformance</String>
-          <String>Msg</String>
-          <String>Sev</String>
-          <String>Node</String>
-          <String>SessionDocName</String>
-          <String>SessionExeType</String>
-          <String>SessionExeVersion</String>
-          <String>SessionID</String>
-          <String>UserID</String>
-          <String>DocumentPath</String>
-          <String>DocumentName</String>
-          <String>Document</String>
-          <String>QlikView User</String>
-          <String>Exit Reason</String>
-          <String>SessionRange</String>
-          <String>AuthenticatedUser</String>
-          <String>Identifying user</String>
-          <String>Client machine identification</String>
-          <String>Serial number</String>
-          <String>Client Type</String>
-          <String>Client Type2</String>
-          <String>Secure Protocol</String>
-          <String>Tunnel Protocol</String>
-          <String>Client Address</String>
-          <String>LanID</String>
-          <String>Cal Type</String>
-          <String>Cal Usage Count</String>
-          <String>WSLogType</String>
-          <String>WSText</String>
-          <String>WebSvcNode</String>
-          <String>ErrorType</String>
-          <String>MCMessage</String>
-          <String>MGMTNode</String>
-          <String>DSCErrorType</String>
-          <String>DSCMessage</String>
-          <String>DSCNode</String>
-          <String>LogID</String>
-          <String>Name</String>
-          <String>FullLogPath</String>
-          <String>DistributeTaskID</String>
-          <String>DistributeTaskIDTR</String>
-          <String>RunID</String>
-          <String>TaskManuallyAborted</String>
-          <String>PreviousRunHadErrors</String>
-          <String>InternalError</String>
-          <String>FinishedAt</String>
-          <String>MaxRunTime</String>
-          <String>HasWarnings</String>
-          <String>Status</String>
-          <String>JobStart</String>
-          <String>JobFinish</String>
-          <String>JobFinishDt</String>
-          <String>LogFinalEntryType</String>
-          <String>Text</String>
-          <String>TaskFinishTime</String>
-          <String>Acronym</String>
-          <String>Default Log Folder</String>
-          <String>Log File Name</String>
-          <String>Operating System</String>
-          <String>Service/Product</String>
-          <String>TypeofLog</String>
-          <String>MsgSource</String>
+          <String>PerfDummy</String>
+          <String>QVSRDummy</String>
         </FieldNames>
       </FieldTagData>
       <FieldTagData>
@@ -1060,113 +419,6 @@
           <String>$Rows</String>
           <String>$Fields</String>
           <String>$FieldNo</String>
-          <String>EventNbr</String>
-          <String>EventsTime</String>
-          <String>EventsTimestamp</String>
-          <String>SeverityID</String>
-          <String>EventID</String>
-          <String>QVSCount</String>
-          <String>Server Started</String>
-          <String>PerformanceTimestamp</String>
-          <String>ActiveDocSessions</String>
-          <String>DocSessions</String>
-          <String>ActiveAnonymousDocSessions</String>
-          <String>AnonymousDocSessions</String>
-          <String>ActiveTunneledDocSessions</String>
-          <String>TunneledDocSessions</String>
-          <String>DocSessionStarts</String>
-          <String>ActiveDocs</String>
-          <String>RefDocs</String>
-          <String>LoadedDocs</String>
-          <String>DocLoads</String>
-          <String>DocLoadFails</String>
-          <String>ActiveIpAddrs</String>
-          <String>IpAddrs</String>
-          <String>ActiveUsers</String>
-          <String>Users</String>
-          <String>CPULoad</String>
-          <String>VMCommitted(MB)</String>
-          <String>VMAllocated(MB)</String>
-          <String>VMFree(MB)</String>
-          <String>VMLargestFreeBlock(MB)</String>
-          <String>UsageCalBalance</String>
-          <String>QVSRestart</String>
-          <String>DocUseKey</String>
-          <String>Document Timestamp</String>
-          <String>Session Start</String>
-          <String>SSessionStart</String>
-          <String>Session Duration</String>
-          <String>Session End</String>
-          <String>CPU spent (s)</String>
-          <String>Bytes Received</String>
-          <String>Bytes Sent</String>
-          <String>SessionCalls</String>
-          <String>SessionSelections</String>
-          <String>Client Build Version</String>
-          <String>BuildVersion</String>
-          <String>Server Port</String>
-          <String>Client Port</String>
-          <String>UserCountField</String>
-          <String>@1b</String>
-          <String>WSDate</String>
-          <String>WSDay</String>
-          <String>WSYear</String>
-          <String>WSMonth</String>
-          <String>WSHour</String>
-          <String>WSMinute</String>
-          <String>WSSecond</String>
-          <String>WSTime</String>
-          <String>@1</String>
-          <String>MGMTDate</String>
-          <String>MGMTDay</String>
-          <String>MGMTYear</String>
-          <String>MGMTMonth</String>
-          <String>MGMTHour</String>
-          <String>MGMTMinute</String>
-          <String>MGMTSecond</String>
-          <String>MgmtTimestamp</String>
-          <String>@1c</String>
-          <String>DSCDate</String>
-          <String>DSCDay</String>
-          <String>DSCYear</String>
-          <String>DSCMonth</String>
-          <String>DSCHour</String>
-          <String>DSCMinute</String>
-          <String>DSCSecond</String>
-          <String>DSCTimestamp</String>
-          <String>MaxID</String>
-          <String>MaxSessionDT</String>
-          <String>LogTaskDay</String>
-          <String>LogTaskYear</String>
-          <String>LogTaskMonth</String>
-          <String>Time</String>
-          <String>StartedAt</String>
-          <String>ClusterID</String>
-          <String>OwnedByClusterID</String>
-          <String>LastExecution</String>
-          <String>TRDay</String>
-          <String>TRMonth</String>
-          <String>TRYear</String>
-          <String>TRTime</String>
-          <String>StartCount</String>
-          <String>JobDayKey</String>
-          <String>JobCount</String>
-          <String>Date</String>
-          <String>Weekday</String>
-          <String>Year</String>
-          <String>Month</String>
-          <String>Week</String>
-          <String>Day</String>
-          <String>Hour</String>
-          <String>Minute</String>
-          <String>YearMonth</String>
-          <String>YearWeek</String>
-          <String>RowNum</String>
-          <String>Timestamp</String>
-          <String>QVSStartedAt</String>
-          <String>Color1</String>
-          <String>Color2</String>
-          <String>Color3</String>
         </FieldNames>
       </FieldTagData>
       <FieldTagData>
@@ -1175,128 +427,19 @@
           <String>$Rows</String>
           <String>$Fields</String>
           <String>$FieldNo</String>
-          <String>EventNbr</String>
-          <String>SeverityID</String>
-          <String>EventID</String>
-          <String>QVSCount</String>
-          <String>ActiveDocSessions</String>
-          <String>DocSessions</String>
-          <String>ActiveAnonymousDocSessions</String>
-          <String>AnonymousDocSessions</String>
-          <String>ActiveTunneledDocSessions</String>
-          <String>TunneledDocSessions</String>
-          <String>DocSessionStarts</String>
-          <String>ActiveDocs</String>
-          <String>RefDocs</String>
-          <String>LoadedDocs</String>
-          <String>DocLoads</String>
-          <String>DocLoadFails</String>
-          <String>ActiveIpAddrs</String>
-          <String>IpAddrs</String>
-          <String>ActiveUsers</String>
-          <String>Users</String>
-          <String>CPULoad</String>
-          <String>VMCommitted(MB)</String>
-          <String>VMAllocated(MB)</String>
-          <String>VMFree(MB)</String>
-          <String>VMLargestFreeBlock(MB)</String>
-          <String>UsageCalBalance</String>
-          <String>DocUseKey</String>
-          <String>CPU spent (s)</String>
-          <String>Bytes Received</String>
-          <String>Bytes Sent</String>
-          <String>SessionCalls</String>
-          <String>SessionSelections</String>
-          <String>Client Build Version</String>
-          <String>BuildVersion</String>
-          <String>Server Port</String>
-          <String>Client Port</String>
-          <String>UserCountField</String>
-          <String>WSDay</String>
-          <String>WSYear</String>
-          <String>WSMonth</String>
-          <String>WSHour</String>
-          <String>WSMinute</String>
-          <String>WSSecond</String>
-          <String>MGMTDay</String>
-          <String>MGMTYear</String>
-          <String>MGMTMonth</String>
-          <String>MGMTHour</String>
-          <String>MGMTMinute</String>
-          <String>MGMTSecond</String>
-          <String>DSCDay</String>
-          <String>DSCYear</String>
-          <String>DSCMonth</String>
-          <String>DSCHour</String>
-          <String>DSCMinute</String>
-          <String>DSCSecond</String>
-          <String>MaxID</String>
-          <String>LogTaskDay</String>
-          <String>LogTaskYear</String>
-          <String>LogTaskMonth</String>
-          <String>ClusterID</String>
-          <String>OwnedByClusterID</String>
-          <String>TRDay</String>
-          <String>TRYear</String>
-          <String>StartCount</String>
-          <String>JobDayKey</String>
-          <String>JobCount</String>
-          <String>Date</String>
-          <String>Weekday</String>
-          <String>Year</String>
-          <String>Month</String>
-          <String>Week</String>
-          <String>Day</String>
-          <String>Hour</String>
-          <String>Minute</String>
-          <String>YearMonth</String>
-          <String>YearWeek</String>
-          <String>RowNum</String>
-          <String>Color1</String>
-          <String>Color2</String>
-          <String>Color3</String>
         </FieldNames>
       </FieldTagData>
       <FieldTagData>
-        <Tag>$timestamp</Tag>
+        <Tag>$keypart</Tag>
         <FieldNames>
-          <String>EventsTime</String>
-          <String>EventsTimestamp</String>
-          <String>Server Started</String>
-          <String>PerformanceTimestamp</String>
-          <String>QVSRestart</String>
-          <String>Document Timestamp</String>
-          <String>Session Start</String>
-          <String>SSessionStart</String>
-          <String>Session End</String>
-          <String>Client Port</String>
-          <String>@1b</String>
-          <String>WSDate</String>
-          <String>WSTime</String>
-          <String>@1</String>
-          <String>MGMTDate</String>
-          <String>MgmtTimestamp</String>
-          <String>@1c</String>
-          <String>DSCDate</String>
-          <String>DSCTimestamp</String>
-          <String>MaxSessionDT</String>
-          <String>StartedAt</String>
-          <String>LastExecution</String>
-          <String>TRMonth</String>
-          <String>Date</String>
-          <String>YearMonth</String>
-          <String>YearWeek</String>
           <String>Timestamp</String>
-          <String>QVSStartedAt</String>
+          <String>DateHourKey</String>
         </FieldNames>
       </FieldTagData>
       <FieldTagData>
-        <Tag>$date</Tag>
+        <Tag>$synthetic</Tag>
         <FieldNames>
-          <String>Client Port</String>
-          <String>Date</String>
-          <String>YearMonth</String>
-          <String>YearWeek</String>
+          <String>$Syn 1</String>
         </FieldNames>
       </FieldTagData>
     </ScriptBased>

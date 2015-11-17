@@ -363,7 +363,7 @@
         <Label></Label>
         <Field>
           <Name>AuthenticatedUser</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -514,7 +514,7 @@
         <Label></Label>
         <Field>
           <Name>SessionDocName</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -665,7 +665,7 @@
         <Label></Label>
         <Field>
           <Name>Cal Type</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -816,7 +816,7 @@
         <Label></Label>
         <Field>
           <Name>Node</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -967,7 +967,7 @@
         <Label></Label>
         <Field>
           <Name>Client Build Version</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>438</ColWidth>
@@ -1110,7 +1110,7 @@
         <Label></Label>
         <Field>
           <Name>BuildVersion</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>288</ColWidth>
@@ -1253,7 +1253,7 @@
         <Label></Label>
         <Field>
           <Name>Session Duration</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1411,7 +1411,7 @@
         <Label></Label>
         <Field>
           <Name>Client Address</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1569,7 +1569,7 @@
         <Label></Label>
         <Field>
           <Name>Session Start</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>1</SortByState>
@@ -1727,7 +1727,7 @@
         <Label></Label>
         <Field>
           <Name>Session End</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1878,7 +1878,7 @@
         <Label></Label>
         <Field>
           <Name>Client Port</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2036,7 +2036,7 @@
         <Label></Label>
         <Field>
           <Name>Exit Reason</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2194,7 +2194,7 @@
         <Label></Label>
         <Field>
           <Name>Exe Version</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>370</ColWidth>
@@ -2337,7 +2337,7 @@
         <Label></Label>
         <Field>
           <Name>Client Type</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2490,7 +2490,7 @@
         </Label>
         <Field>
           <Name>SessionCalls</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2643,7 +2643,7 @@
         </Label>
         <Field>
           <Name>SessionSelections</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2794,7 +2794,7 @@
         <Label></Label>
         <Field>
           <Name>Bytes Sent</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2959,7 +2959,7 @@
         <Label></Label>
         <Field>
           <Name>Bytes Received</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -3124,7 +3124,7 @@
         <Label></Label>
         <Field>
           <Name>CPU spent (s)</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>

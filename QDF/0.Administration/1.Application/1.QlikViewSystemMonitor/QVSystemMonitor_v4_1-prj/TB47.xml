@@ -242,7 +242,7 @@
         <Label></Label>
         <Field>
           <Name>Name</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -393,7 +393,7 @@
         <Label></Label>
         <Field>
           <Name>FullLogPath</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -544,7 +544,7 @@
         <Label></Label>
         <Field>
           <Name>LogID</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -853,7 +853,7 @@
         <Label></Label>
         <Field>
           <Name>LogTaskYear</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>272</ColWidth>
@@ -996,7 +996,7 @@
         <Label></Label>
         <Field>
           <Name>LogTaskMonth</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>306</ColWidth>
@@ -1139,7 +1139,7 @@
         <Label></Label>
         <Field>
           <Name>LogTaskDay</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1290,7 +1290,7 @@
         <Label></Label>
         <Field>
           <Name>Time</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1441,7 +1441,7 @@
         <Label></Label>
         <Field>
           <Name>ClusterID</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>178</ColWidth>

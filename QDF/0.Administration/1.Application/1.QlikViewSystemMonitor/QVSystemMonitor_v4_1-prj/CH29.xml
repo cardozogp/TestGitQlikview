@@ -4490,7 +4490,7 @@ Green: &lt;=7 days since QlikView was last accessed.</v>
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>AuthenticatedUser</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -4673,7 +4673,7 @@ Green: &lt;=7 days since QlikView was last accessed.</v>
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>SessionDocName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Document Name</v>
@@ -6553,6 +6553,9 @@ Green: &lt;=7 days since QlikView was last accessed.</v>
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>

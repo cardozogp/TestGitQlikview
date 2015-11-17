@@ -208,7 +208,7 @@
         <Label></Label>
         <Field>
           <Name>Acronym</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -377,7 +377,7 @@
         <Label></Label>
         <Field>
           <Name>Operating System</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -546,7 +546,7 @@
         <Label></Label>
         <Field>
           <Name>Versions</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -715,7 +715,7 @@
         <Label></Label>
         <Field>
           <Name>Service/Product</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -884,7 +884,7 @@
         <Label></Label>
         <Field>
           <Name>Log File Name</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1053,7 +1053,7 @@
         <Label></Label>
         <Field>
           <Name>Default Log Folder</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>

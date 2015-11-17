@@ -323,7 +323,7 @@
       </Label>
       <FieldDef>
         <Name>TypeofLog</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -359,7 +359,7 @@
       <Label></Label>
       <FieldDef>
         <Name>Node</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -397,7 +397,7 @@
       </Label>
       <FieldDef>
         <Name>Sev</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -433,7 +433,7 @@
       <Label></Label>
       <FieldDef>
         <Name>AuthenticatedUser</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -469,7 +469,7 @@
       <Label></Label>
       <FieldDef>
         <Name>Cal Type</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -507,7 +507,7 @@
       </Label>
       <FieldDef>
         <Name>MsgSource</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -581,7 +581,7 @@
       <Label></Label>
       <FieldDef>
         <Name>Date</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -617,7 +617,7 @@
       <Label></Label>
       <FieldDef>
         <Name>Hour</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -653,7 +653,7 @@
       <Label></Label>
       <FieldDef>
         <Name>Minute</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -691,7 +691,7 @@
       </Label>
       <FieldDef>
         <Name>QVSStartedAt</Name>
-        <Type>PRESENT</Type>
+        <Type>IS_DRILL_GROUP</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>

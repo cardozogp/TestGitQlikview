@@ -212,7 +212,7 @@
         <Label></Label>
         <Field>
           <Name>EventsTimestamp</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -363,7 +363,7 @@
         <Label></Label>
         <Field>
           <Name>Severity</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>291</ColWidth>
@@ -506,7 +506,7 @@
         <Label></Label>
         <Field>
           <Name>Message</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -657,7 +657,7 @@
         <Label></Label>
         <Field>
           <Name>EventNbr</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -808,7 +808,7 @@
         <Label></Label>
         <Field>
           <Name>SeverityID</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>247</ColWidth>
@@ -951,7 +951,7 @@
         <Label></Label>
         <Field>
           <Name>EventsTime</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>

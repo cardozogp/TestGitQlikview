@@ -286,6 +286,8 @@
         <CellImageStyleIx>0</CellImageStyleIx>
         <EditableCell>0</EditableCell>
         <CellType>LABEL_CELL</CellType>
+        <CellBorders>false</CellBorders>
+        <CellBorderColor></CellBorderColor>
       </CellStyleDef>
       <CellStyleDef>
         <NumAdjust>2</NumAdjust>
@@ -310,6 +312,8 @@
         <CellImageStyleIx>0</CellImageStyleIx>
         <EditableCell>0</EditableCell>
         <CellType>LABEL_CELL</CellType>
+        <CellBorders>false</CellBorders>
+        <CellBorderColor></CellBorderColor>
       </CellStyleDef>
     </CellStyles>
     <LabelRow>

@@ -1312,7 +1312,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>QVDFileName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>File Name</v>
@@ -1521,7 +1521,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>QVTableName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Table Name</v>
@@ -1730,7 +1730,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>QVDSourceContainerName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Source Container Name</v>
@@ -1939,7 +1939,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>RelativePath</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Relative Container Path</v>
@@ -2148,7 +2148,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>QVDNbrFields</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Nbr of Fields</v>
@@ -3566,6 +3566,9 @@
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>

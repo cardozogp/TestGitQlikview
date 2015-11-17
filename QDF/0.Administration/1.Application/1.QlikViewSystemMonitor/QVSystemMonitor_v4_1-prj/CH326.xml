@@ -926,7 +926,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>RowNum</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -1107,7 +1107,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>Msg</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -1289,7 +1289,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>Sev</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -1471,7 +1471,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>MsgSource</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -1655,7 +1655,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>Node</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Machine</v>
@@ -2361,7 +2361,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>QVSStartedAt</Name>
-        <Type>PRESENT</Type>
+        <Type>IS_DRILL_GROUP</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -3654,15 +3654,14 @@
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>
     <ColWidths>
       <int>331</int>
-      <int>981</int>
-      <int>184</int>
-      <int>303</int>
-      <int>278</int>
       <int>331</int>
     </ColWidths>
     <Striping>

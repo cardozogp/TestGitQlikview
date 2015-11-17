@@ -13272,7 +13272,7 @@
         <Label></Label>
         <Field>
           <Name>Name</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -19763,7 +19763,7 @@
         <Label></Label>
         <Field>
           <Name>DistributeTaskID</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>

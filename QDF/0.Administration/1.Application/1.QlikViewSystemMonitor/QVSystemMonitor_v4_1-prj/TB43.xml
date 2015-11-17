@@ -212,7 +212,7 @@
         <Label></Label>
         <Field>
           <Name>AuthenticatedUser</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -365,7 +365,7 @@
         </Label>
         <Field>
           <Name>SessionDocName</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1406,7 +1406,7 @@
         <Label></Label>
         <Field>
           <Name>Session End</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>272</ColWidth>
@@ -1549,7 +1549,7 @@
         <Label></Label>
         <Field>
           <Name>Session Start</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>419</ColWidth>

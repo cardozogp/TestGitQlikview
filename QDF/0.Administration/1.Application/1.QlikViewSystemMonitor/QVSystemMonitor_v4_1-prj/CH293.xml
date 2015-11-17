@@ -948,7 +948,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>Severity</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>QVS Log Type</v>
@@ -1133,7 +1133,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>Message</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>QVS Msg</v>
@@ -1318,7 +1318,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>DSCErrorType</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>DSC Log Type</v>
@@ -1688,7 +1688,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>ErrorType</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>QMS Log Type</v>
@@ -1873,7 +1873,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>MCMessage</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>QMS Msg</v>
@@ -2058,7 +2058,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>WSLogType</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>QVWS Log Type</v>
@@ -2243,7 +2243,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>WSText</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>QVWS Msg</v>
@@ -4297,18 +4297,14 @@
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>
     <ColWidths>
       <int>353</int>
-      <int>259</int>
-      <int>206</int>
-      <int>253</int>
-      <int>213</int>
-      <int>216</int>
-      <int>263</int>
-      <int>194</int>
     </ColWidths>
     <Striping>
       <int>1</int>
