@@ -1,3 +1,6 @@
 *.qvd
+!*.qvd/ 
 *.qvw
+!*.qvw/ 
 *.log
+!*.log/ 
