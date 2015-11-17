@@ -1,0 +1,25 @@
+﻿///$tab Main
+SET ThousandSep=' ';
+SET DecimalSep=',';
+SET MoneyThousandSep='.';
+SET MoneyDecimalSep=',';
+SET MoneyFormat='#.##0,00 kr;-#.##0,00 kr';
+SET TimeFormat='hh:mm:ss';
+SET DateFormat='YYYY-MM-DD';
+SET TimestampFormat='YYYY-MM-DD hh:mm:ss[.fff]';
+SET MonthNames='jan;feb;mar;apr;maj;jun;jul;aug;sep;okt;nov;dec';
+SET DayNames='må;ti;on;to;fr;lö;sö';
+
+$(Include=..\..\..\..\InitLink.qvs);
+$(Include=..\..\..\InitLink.qvs);
+$(Include=..\..\InitLink.qvs);
+$(Include=..\InitLink.qvs); $(Include=InitLink.qvs);
+
+Transactions:
+LOAD *
+FROM
+$(vG.QVDPath)1.Extract\Transactions.qvd
+(qvd);
+
+
+store Transactions into $(vG.QVDPath)2.Transform\SharedTransactions.qvd
