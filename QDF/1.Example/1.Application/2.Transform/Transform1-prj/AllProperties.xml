@@ -1599,6 +1599,62 @@
       <OnChangeActionItems></OnChangeActionItems>
       <Comment></Comment>
     </VariableProperties>
+    <VariableProperties>
+      <Name>vG.SharedExtractPath</Name>
+      <UseMRU>false</UseMRU>
+      <MRUCount>0</MRUCount>
+      <NumberPresentation></NumberPresentation>
+      <ConstraintsFlag>0</ConstraintsFlag>
+      <StandardType>0</StandardType>
+      <IconType>0</IconType>
+      <UseSoundOnError>false</UseSoundOnError>
+      <UseMsgOnError>false</UseMsgOnError>
+      <ErrorMessage></ErrorMessage>
+      <InputConstraint></InputConstraint>
+      <DefaultLabelAdjust>2</DefaultLabelAdjust>
+      <DefaultTextValueAdjust>2</DefaultTextValueAdjust>
+      <DefaultNumValueAdjust>2</DefaultNumValueAdjust>
+      <UseScroll>false</UseScroll>
+      <UsePredefListedValues>false</UsePredefListedValues>
+      <PreDefinedList></PreDefinedList>
+      <UsePredefNumberSeries>false</UsePredefNumberSeries>
+      <EnableExpressionEditDlg>true</EnableExpressionEditDlg>
+      <dFrom>0000000000000000</dFrom>
+      <dTo>4024000000000000</dTo>
+      <dStep>3FF0000000000000</dStep>
+      <IncludeInBookmark>false</IncludeInBookmark>
+      <OnInputActionItems></OnInputActionItems>
+      <OnChangeActionItems></OnChangeActionItems>
+      <Comment></Comment>
+    </VariableProperties>
+    <VariableProperties>
+      <Name>vG.SharedTransformPath</Name>
+      <UseMRU>false</UseMRU>
+      <MRUCount>0</MRUCount>
+      <NumberPresentation></NumberPresentation>
+      <ConstraintsFlag>0</ConstraintsFlag>
+      <StandardType>0</StandardType>
+      <IconType>0</IconType>
+      <UseSoundOnError>false</UseSoundOnError>
+      <UseMsgOnError>false</UseMsgOnError>
+      <ErrorMessage></ErrorMessage>
+      <InputConstraint></InputConstraint>
+      <DefaultLabelAdjust>2</DefaultLabelAdjust>
+      <DefaultTextValueAdjust>2</DefaultTextValueAdjust>
+      <DefaultNumValueAdjust>2</DefaultNumValueAdjust>
+      <UseScroll>false</UseScroll>
+      <UsePredefListedValues>false</UsePredefListedValues>
+      <PreDefinedList></PreDefinedList>
+      <UsePredefNumberSeries>false</UsePredefNumberSeries>
+      <EnableExpressionEditDlg>true</EnableExpressionEditDlg>
+      <dFrom>0000000000000000</dFrom>
+      <dTo>4024000000000000</dTo>
+      <dStep>3FF0000000000000</dStep>
+      <IncludeInBookmark>false</IncludeInBookmark>
+      <OnInputActionItems></OnInputActionItems>
+      <OnChangeActionItems></OnChangeActionItems>
+      <Comment></Comment>
+    </VariableProperties>
   </VariableProperties>
   <FieldProperties>
     <FieldProperties>
@@ -2007,8 +2063,35 @@
       <OnLockActionItems></OnLockActionItems>
     </FieldProperties>
   </FieldProperties>
-  <BinaryAlternateStateStates enctype="base64"></BinaryAlternateStateStates>
+  <BinaryAlternateStateStates enctype="base64">
+      AAAAAJx1AIg85Df+nHUAiDzkN/4AAAAAAACcdQCIPOQ3/px1AIg85Df+AAAAAAAAnHUAiDzkN/6c
+      dQCIPOQ3/gAAAAAAAJx1AIg85Df+nHUAiDzkN/4AAAAAAACcdQCIPOQ3/px1AIg85Df+AAAAAAAA
+      nHUAiDzkN/6cdQCIPOQ3/gAAAAAAAJx1AIg85Df+nHUAiDzkN/4AAAAAAACcdQCIPOQ3/px1AIg8
+      5Df+AAAAAAAAnHUAiDzkN/6cdQCIPOQ3/gAA
+  </BinaryAlternateStateStates>
   <TextualAlternateStateStates enctype="base64">
-      AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      CQAAAAkAAAAGJEZpZWxkBiRUYWJsZQUkUm93cwckRmllbGRzCCRGaWVsZE5vBSRJbmZvA051bQpB
+      c2NpaUFscGhhCEFzY2lpTnVtCQAAAP//////////////////////////////////////////////
+      /wkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAPAAAADgAA
+      AAEAAAEAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAEAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAADwAAAA4AAAABAAABAAAEAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAIAAAAAAAAAAA8AAAAOAAAAAQAAAQAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAPAAAADgAAAAEA
+      AAEAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAEAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAADwAAAA4AAAABAAABAAAEAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAIA
+      AAAAAAAAAA8AAAAOAAAAAQAAAQAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAPAAAADgAAAAEAAQAA
+      AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA
+      AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAADwAAAA4AAAABAAEBAAAEAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAIAAAAA
+      AAAAAA8AAAAOAAAAAQABAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAABAAAA
+      CQAAAAAAAAAAAAAAAAkAAAAAnHUAiDzkN/6cdQCIPOQ3/gCcdQCIPOQ3/px1AIg85Df+AJx1AIg8
+      5Df+nHUAiDzkN/4AnHUAiDzkN/6cdQCIPOQ3/gCcdQCIPOQ3/px1AIg85Df+AJx1AIg85Df+nHUA
+      iDzkN/4AnHUAiDzkN/6cdQCIPOQ3/gCcdQCIPOQ3/px1AIg85Df+AJx1AIg85Df+nHUAiDzkN/4J
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAAAJAAAAAAAAAAAAAAAACQAAAAAAAAAA
+      AAAAAA==
   </TextualAlternateStateStates>
 </AllProperties>

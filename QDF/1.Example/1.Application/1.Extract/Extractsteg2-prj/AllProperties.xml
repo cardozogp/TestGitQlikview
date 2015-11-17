@@ -1571,6 +1571,62 @@
       <OnChangeActionItems></OnChangeActionItems>
       <Comment></Comment>
     </VariableProperties>
+    <VariableProperties>
+      <Name>vG.SharedExtractPath</Name>
+      <UseMRU>false</UseMRU>
+      <MRUCount>0</MRUCount>
+      <NumberPresentation></NumberPresentation>
+      <ConstraintsFlag>0</ConstraintsFlag>
+      <StandardType>0</StandardType>
+      <IconType>0</IconType>
+      <UseSoundOnError>false</UseSoundOnError>
+      <UseMsgOnError>false</UseMsgOnError>
+      <ErrorMessage></ErrorMessage>
+      <InputConstraint></InputConstraint>
+      <DefaultLabelAdjust>2</DefaultLabelAdjust>
+      <DefaultTextValueAdjust>2</DefaultTextValueAdjust>
+      <DefaultNumValueAdjust>2</DefaultNumValueAdjust>
+      <UseScroll>false</UseScroll>
+      <UsePredefListedValues>false</UsePredefListedValues>
+      <PreDefinedList></PreDefinedList>
+      <UsePredefNumberSeries>false</UsePredefNumberSeries>
+      <EnableExpressionEditDlg>true</EnableExpressionEditDlg>
+      <dFrom>0000000000000000</dFrom>
+      <dTo>4024000000000000</dTo>
+      <dStep>3FF0000000000000</dStep>
+      <IncludeInBookmark>false</IncludeInBookmark>
+      <OnInputActionItems></OnInputActionItems>
+      <OnChangeActionItems></OnChangeActionItems>
+      <Comment></Comment>
+    </VariableProperties>
+    <VariableProperties>
+      <Name>vG.SharedTransformPath</Name>
+      <UseMRU>false</UseMRU>
+      <MRUCount>0</MRUCount>
+      <NumberPresentation></NumberPresentation>
+      <ConstraintsFlag>0</ConstraintsFlag>
+      <StandardType>0</StandardType>
+      <IconType>0</IconType>
+      <UseSoundOnError>false</UseSoundOnError>
+      <UseMsgOnError>false</UseMsgOnError>
+      <ErrorMessage></ErrorMessage>
+      <InputConstraint></InputConstraint>
+      <DefaultLabelAdjust>2</DefaultLabelAdjust>
+      <DefaultTextValueAdjust>2</DefaultTextValueAdjust>
+      <DefaultNumValueAdjust>2</DefaultNumValueAdjust>
+      <UseScroll>false</UseScroll>
+      <UsePredefListedValues>false</UsePredefListedValues>
+      <PreDefinedList></PreDefinedList>
+      <UsePredefNumberSeries>false</UsePredefNumberSeries>
+      <EnableExpressionEditDlg>true</EnableExpressionEditDlg>
+      <dFrom>0000000000000000</dFrom>
+      <dTo>4024000000000000</dTo>
+      <dStep>3FF0000000000000</dStep>
+      <IncludeInBookmark>false</IncludeInBookmark>
+      <OnInputActionItems></OnInputActionItems>
+      <OnChangeActionItems></OnChangeActionItems>
+      <Comment></Comment>
+    </VariableProperties>
   </VariableProperties>
   <FieldProperties>
     <FieldProperties>
