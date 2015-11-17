@@ -3,7 +3,7 @@ Dim fso
 Set fso = CreateObject("Scripting.FileSystemObject")
  
 TemplatePath = fso.GetAbsolutePathName(".") & "\qvw.template"
-<a id="ctl00_FullRegion_PC_148_1_EditForm_MainBody_ctl00_resize" class="mceResize" onclick="return false;" href="javascript:;"></a>' WScript.Echo TemplatePath
+'<a id="ctl00_FullRegion_PC_148_1_EditForm_MainBody_ctl00_resize" class="mceResize" onclick="return false;" href="javascript:;"></a>' WScript.Echo TemplatePath
  
 ' Call the RecurseFolders routine
 ' Takes one argument - in this case, the Path of the folder to be searched

@@ -242,7 +242,7 @@
         <Label></Label>
         <Field>
           <Name>Name</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>800</ColWidth>
@@ -385,7 +385,7 @@
         <Label></Label>
         <Field>
           <Name>StartedAt</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -536,7 +536,7 @@
         <Label></Label>
         <Field>
           <Name>FinishedAt</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -689,7 +689,7 @@
         </Label>
         <Field>
           <Name>LogFinalEntryType</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>256</ColWidth>
@@ -832,7 +832,7 @@
         <Label></Label>
         <Field>
           <Name>Text</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>

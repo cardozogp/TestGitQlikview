@@ -247,7 +247,7 @@
         <Label></Label>
         <Field>
           <Name>Name</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>700</ColWidth>
@@ -1120,7 +1120,7 @@
         <Label></Label>
         <Field>
           <Name>LogID</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>750</ColWidth>

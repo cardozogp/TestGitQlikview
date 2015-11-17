@@ -757,7 +757,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>SessionDocName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Doc Name</v>
@@ -938,7 +938,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>AuthenticatedUser</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -2739,12 +2739,18 @@
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>
     <ColWidths>
       <int>541</int>
       <int>494</int>
+      <int>300</int>
+      <int>469</int>
+      <int>191</int>
       <int>963</int>
     </ColWidths>
     <Striping>

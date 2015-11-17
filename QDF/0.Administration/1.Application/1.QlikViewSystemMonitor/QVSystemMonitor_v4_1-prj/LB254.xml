@@ -269,10 +269,11 @@
     <SuppressSearchHighlight>false</SuppressSearchHighlight>
     <TextColor></TextColor>
     <PreferredTextSearchMode>TEXT_SEARCH_WILDCARD</PreferredTextSearchMode>
+    <CellBorders>false</CellBorders>
   </Layout>
   <Def>
     <Name>LogFinalEntryType</Name>
-    <Type>PRESENT</Type>
+    <Type>NOT_PRESENT</Type>
   </Def>
   <Title>
     <v>Tasks</v>

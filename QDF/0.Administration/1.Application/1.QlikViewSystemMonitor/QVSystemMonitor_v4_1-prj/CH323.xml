@@ -1140,7 +1140,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>Node</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -2547,6 +2547,9 @@
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>

@@ -393,7 +393,7 @@
         <Label></Label>
         <Field>
           <Name>AuthenticatedUser</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -546,7 +546,7 @@
         </Label>
         <Field>
           <Name>SessionDocName</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>

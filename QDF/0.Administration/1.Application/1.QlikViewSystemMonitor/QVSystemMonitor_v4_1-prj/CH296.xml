@@ -719,7 +719,7 @@ OR (MsgSource = 'Pub' AND Sev = 'Failed'),1))</v>
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>MsgSource</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title></Title>
       <TotalString></TotalString>
@@ -2009,6 +2009,9 @@ OR (MsgSource = 'Pub' AND Sev = 'Failed'),1))</v>
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>

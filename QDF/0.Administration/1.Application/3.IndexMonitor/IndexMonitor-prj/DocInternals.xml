@@ -1,55 +1,6 @@
 ﻿<DocInternals>
-  <AlwaysLoose>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-    <bool>false</bool>
-  </AlwaysLoose>
-  <FieldSrcTables>
-    <String>6</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>7</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>8</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>9</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>10</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>11</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>12</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>13</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>14</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>15</String>
-    <String>1</String>
-    <String>IndexTable</String>
-    <String>16</String>
-    <String>3</String>
-    <String>IndexTable</String>
-    <String>Tags</String>
-    <String>Fields</String>
-    <String>17</String>
-    <String>1</String>
-    <String>Tags</String>
-    <String>18</String>
-    <String>1</String>
-    <String>Fields</String>
-  </FieldSrcTables>
+  <AlwaysLoose></AlwaysLoose>
+  <FieldSrcTables></FieldSrcTables>
   <TableViewData>
     <Pos></Pos>
     <CtlInfo>
@@ -137,7 +88,7 @@
     <Mode>0</Mode>
   </TableViewData>
   <Bookmarks></Bookmarks>
-  <SavedByVersion>11.20.12235.0409</SavedByVersion>
+  <SavedByVersion>11.20.12742.0409</SavedByVersion>
   <ForceBackEndMacroExecution>false</ForceBackEndMacroExecution>
   <FieldTags>
     <ScriptBased>

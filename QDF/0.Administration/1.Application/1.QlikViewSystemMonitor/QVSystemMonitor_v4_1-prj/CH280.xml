@@ -667,7 +667,7 @@
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>SessionDocName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Doc Name</v>
@@ -1944,6 +1944,14 @@
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor>
+      <Red>255</Red>
+      <Green>255</Green>
+      <Blue>255</Blue>
+      <Alpha>80</Alpha>
+    </PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>

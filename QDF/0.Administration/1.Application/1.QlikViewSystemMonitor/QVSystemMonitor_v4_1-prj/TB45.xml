@@ -213,7 +213,7 @@
         <Label></Label>
         <Field>
           <Name>Date</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -364,7 +364,7 @@
         <Label></Label>
         <Field>
           <Name>Hour</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -515,7 +515,7 @@
         <Label></Label>
         <Field>
           <Name>Minute</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>

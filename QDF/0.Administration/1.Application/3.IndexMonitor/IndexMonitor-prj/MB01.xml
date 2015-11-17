@@ -350,7 +350,7 @@
       </Label>
       <FieldDef>
         <Name>Tags</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -388,7 +388,7 @@
       </Label>
       <FieldDef>
         <Name>QVDSourceContainerName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -426,7 +426,7 @@
       </Label>
       <FieldDef>
         <Name>QVDIndexStorageName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -464,7 +464,7 @@
       </Label>
       <FieldDef>
         <Name>QVTableName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>
@@ -502,7 +502,7 @@
       </Label>
       <FieldDef>
         <Name>Fields</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </FieldDef>
       <SortCriteria>
         <SortByState>1</SortByState>

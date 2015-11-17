@@ -214,7 +214,7 @@
         </Label>
         <Field>
           <Name>PerformanceTimestamp</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -372,7 +372,7 @@
         <Label></Label>
         <Field>
           <Name>Users</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -530,7 +530,7 @@
         <Label></Label>
         <Field>
           <Name>ActiveUsers</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -688,7 +688,7 @@
         <Label></Label>
         <Field>
           <Name>ActiveDocs</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -846,7 +846,7 @@
         <Label></Label>
         <Field>
           <Name>ActiveDocSessions</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1004,7 +1004,7 @@
         <Label></Label>
         <Field>
           <Name>LoadedDocs</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1162,7 +1162,7 @@
         <Label></Label>
         <Field>
           <Name>DocLoads</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1320,7 +1320,7 @@
         <Label></Label>
         <Field>
           <Name>DocLoadFails</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>300</ColWidth>
@@ -1470,7 +1470,7 @@
         <Label></Label>
         <Field>
           <Name>DocSessions</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1628,7 +1628,7 @@
         <Label></Label>
         <Field>
           <Name>DocSessionStarts</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1786,7 +1786,7 @@
         <Label></Label>
         <Field>
           <Name>RefDocs</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -1944,7 +1944,7 @@
         <Label></Label>
         <Field>
           <Name>CPULoad</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2095,7 +2095,7 @@
         <Label></Label>
         <Field>
           <Name>VMAllocated(MB)</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2246,7 +2246,7 @@
         <Label></Label>
         <Field>
           <Name>VMCommitted(MB)</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2397,7 +2397,7 @@
         <Label></Label>
         <Field>
           <Name>VMFree(MB)</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria>
           <SortByState>0</SortByState>
@@ -2548,7 +2548,7 @@
         <Label></Label>
         <Field>
           <Name>VMLargestFreeBlock(MB)</Name>
-          <Type>PRESENT</Type>
+          <Type>NOT_PRESENT</Type>
         </Field>
         <SortCriteria></SortCriteria>
         <ColWidth>519</ColWidth>

@@ -1271,7 +1271,7 @@ If(len([Client Build Version])&gt;0, count(if([Client Build Version]&lt;&gt; Bui
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>AuthenticatedUser</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Auth. User</v>
@@ -1439,7 +1439,7 @@ If(len([Client Build Version])&gt;0, count(if([Client Build Version]&lt;&gt; Bui
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>SessionDocName</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Doc Name</v>
@@ -1607,7 +1607,7 @@ If(len([Client Build Version])&gt;0, count(if([Client Build Version]&lt;&gt; Bui
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>Client Build Version</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>Plugin Build</v>
@@ -1787,7 +1787,7 @@ If(len([Client Build Version])&gt;0, count(if([Client Build Version]&lt;&gt; Bui
     <ChartDimensionDataDef>
       <PseudoDef>
         <Name>BuildVersion</Name>
-        <Type>PRESENT</Type>
+        <Type>NOT_PRESENT</Type>
       </PseudoDef>
       <Title>
         <v>QVS Build</v>
@@ -3091,16 +3091,15 @@ If(len([Client Build Version])&gt;0, count(if([Client Build Version]&lt;&gt; Bui
     <TrellisProperties></TrellisProperties>
     <MekkoChartMode>MEKKOCHART_NORMALIZED</MekkoChartMode>
     <TruncateLabel>true</TruncateLabel>
+    <ScaleChartSizeRects></ScaleChartSizeRects>
+    <FastChangeRefSizeRect></FastChangeRefSizeRect>
+    <PieChartSectorOutlineColor></PieChartSectorOutlineColor>
   </ChartProperties>
   <TableProperties>
     <VerticalLabels>false</VerticalLabels>
     <ColWidths>
       <int>153</int>
       <int>97</int>
-      <int>300</int>
-      <int>288</int>
-      <int>291</int>
-      <int>228</int>
     </ColWidths>
     <Striping>
       <int>1</int>
